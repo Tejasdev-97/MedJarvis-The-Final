@@ -11,14 +11,14 @@ import {
 
 import Logo from "../common/Logo";
 import Button from "../common/Button";
+import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 
-export default function Navbar({
-    darkMode,
-    setDarkMode,
-    language,
-    setLanguage
-}) {
+export default function Navbar() {
     const navigate = useNavigate();
+    const { isDark, toggleTheme } = useTheme();
+    const { language, setLanguage, supportedLanguages, t } = useLanguage();
+    const darkMode = isDark;
 
     const [mobileMenu, setMobileMenu] = useState(false);
 
@@ -65,7 +65,7 @@ export default function Navbar({
                                     }
                                 `}
                             >
-                                Features
+                                {t("Features")}
                             </a>
 
                             <a
@@ -81,7 +81,7 @@ export default function Navbar({
                                     }
                                 `}
                             >
-                                Workflow
+                                {t("Workflow")}
                             </a>
 
                             <a
@@ -97,7 +97,7 @@ export default function Navbar({
                                     }
                                 `}
                             >
-                                Roles
+                                {t("Roles")}
                             </a>
 
                             <a
@@ -113,7 +113,7 @@ export default function Navbar({
                                     }
                                 `}
                             >
-                                Home
+                                {t("Home")}
                             </a>
 
                         </nav>
@@ -166,9 +166,8 @@ export default function Navbar({
                             </div>
 
                             <button
-                                onClick={() =>
-                                    setDarkMode(!darkMode)
-                                }
+                                onClick={toggleTheme}
+                                title={darkMode ? t("Switch to Light Mode") : t("Switch to Dark Mode")}
                                 className={`
                                     h-11
                                     w-11
@@ -197,7 +196,7 @@ export default function Navbar({
                                     navigate("/login")
                                 }
                             >
-                                Sign In
+                                {t("Sign In")}
                             </Button>
 
                         </div>
@@ -240,13 +239,13 @@ export default function Navbar({
                 >
                     <div className="flex flex-col gap-5 p-6">
 
-                        <a href="#features">Features</a>
+                        <a href="#features">{t("Features")}</a>
 
-                        <a href="#workflow">Workflow</a>
+                        <a href="#workflow">{t("Workflow")}</a>
 
-                        <a href="#roles">Roles</a>
+                        <a href="#roles">{t("Roles")}</a>
 
-                        <a href="#home">Home</a>
+                        <a href="#home">{t("Home")}</a>
 
                         <Button
                             className="w-full"
@@ -254,7 +253,7 @@ export default function Navbar({
                                 navigate("/login")
                             }
                         >
-                            Sign In
+                            {t("Sign In")}
                         </Button>
 
                     </div>
@@ -262,4 +261,4 @@ export default function Navbar({
             )}
         </>
     );
-}
+}

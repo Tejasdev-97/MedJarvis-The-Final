@@ -1,15 +1,12 @@
 import Button from "../common/Button";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function CTASection({ darkMode, navigate }) {
-    return (
-        <section
-            className="
-                py-24
-                px-6
-            "
-        >
-            <div className="max-w-6xl mx-auto">
+    const { t } = useLanguage();
 
+    return (
+        <section className="py-24 px-6">
+            <div className="max-w-6xl mx-auto">
                 <div
                     className="
                         rounded-[32px]
@@ -24,19 +21,14 @@ export default function CTASection({ darkMode, navigate }) {
                         shadow-2xl
                     "
                 >
-
                     {/* Heading */}
-
                     <h2 className="text-4xl lg:text-5xl font-bold">
-
-                        Ready to Experience
+                        {t("Ready to Experience")}
                         <br />
-                        Smarter Healthcare?
-
+                        {t("Smarter Healthcare?")}
                     </h2>
 
                     {/* Description */}
-
                     <p
                         className="
                             mt-8
@@ -47,15 +39,10 @@ export default function CTASection({ darkMode, navigate }) {
                             text-green-50
                         "
                     >
-                        Join MedJarvis to access AI-powered healthcare,
-                        secure digital health identity, connected wearable
-                        devices, multilingual assistance and seamless
-                        collaboration between patients, doctors,
-                        hospitals and emergency responders.
+                        {t("Join MedJarvis to access AI-powered healthcare, secure digital health identity, connected wearable devices, multilingual assistance and seamless collaboration between patients, doctors, hospitals and emergency responders.")}
                     </p>
 
                     {/* Buttons */}
-
                     <div
                         className="
                             mt-12
@@ -65,7 +52,6 @@ export default function CTASection({ darkMode, navigate }) {
                             gap-5
                         "
                     >
-
                         <Button
                             onClick={() => navigate("/login")}
                             className="
@@ -74,7 +60,7 @@ export default function CTASection({ darkMode, navigate }) {
                                 hover:bg-gray-100
                             "
                         >
-                            Get Started
+                            {t("Get Started")}
                         </Button>
 
                         <button
@@ -100,13 +86,11 @@ export default function CTASection({ darkMode, navigate }) {
                                 hover:text-[#2D6A4F]
                             "
                         >
-                            Learn More
+                            {t("Learn More")}
                         </button>
-
                     </div>
 
                     {/* Statistics */}
-
                     <div
                         className="
                             mt-16
@@ -115,61 +99,35 @@ export default function CTASection({ darkMode, navigate }) {
                             md:grid-cols-3
                         "
                     >
-
                         <div>
-
                             <h3 className="text-4xl font-bold">
-
                                 AI
-
                             </h3>
-
                             <p className="mt-2 text-green-100">
-
-                                Intelligent Health Assistance
-
+                                {t("Intelligent Health Assistance")}
                             </p>
-
                         </div>
 
                         <div>
-
                             <h3 className="text-4xl font-bold">
-
                                 24×7
-
                             </h3>
-
                             <p className="mt-2 text-green-100">
-
-                                Healthcare Availability
-
+                                {t("Healthcare Availability")}
                             </p>
-
                         </div>
 
                         <div>
-
                             <h3 className="text-4xl font-bold">
-
-                                Secure
-
+                                {t("Secure")}
                             </h3>
-
                             <p className="mt-2 text-green-100">
-
-                                Privacy-First Digital Identity
-
+                                {t("Privacy-First Digital Identity")}
                             </p>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
     );
-}
+}

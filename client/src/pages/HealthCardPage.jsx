@@ -154,6 +154,7 @@ export default function HealthCardPage() {
                             animate-spin
                             mx-auto
                             text-[#2D6A4F]
+                            dark:text-emerald-400
                         "
                     />
 
@@ -161,6 +162,7 @@ export default function HealthCardPage() {
                         className="
                             mt-5
                             text-[#1A1A1A]
+                            dark:text-slate-100
                             font-semibold
                             text-lg
                         "
@@ -172,6 +174,7 @@ export default function HealthCardPage() {
                         className="
                             mt-1
                             text-[#4A4A4A]
+                            dark:text-slate-400
                         "
                     >
                         Retrieving your secure health identity.
@@ -194,8 +197,10 @@ export default function HealthCardPage() {
                 <div
                     className="
                         bg-[#FFF5F5]
+                        dark:bg-red-950/40
                         border
                         border-red-200
+                        dark:border-red-900
                         rounded-3xl
                         p-7
                         shadow-sm
@@ -207,6 +212,7 @@ export default function HealthCardPage() {
                             items-center
                             gap-3
                             text-red-700
+                            dark:text-red-300
                         "
                     >
                         <TriangleAlert size={28} />
@@ -225,6 +231,7 @@ export default function HealthCardPage() {
                         className="
                             mt-4
                             text-[#1A1A1A]
+                            dark:text-slate-200
                             font-medium
                         "
                     >
@@ -248,8 +255,10 @@ export default function HealthCardPage() {
                 <div
                     className="
                         bg-white
+                        dark:bg-slate-900
                         border
                         border-[#E8E0D5]
+                        dark:border-slate-800
                         rounded-3xl
                         shadow-sm
                         p-8
@@ -261,6 +270,7 @@ export default function HealthCardPage() {
                         className="
                             mx-auto
                             text-[#2D6A4F]
+                            dark:text-emerald-400
                         "
                     />
 
@@ -270,6 +280,7 @@ export default function HealthCardPage() {
                             text-2xl
                             font-bold
                             text-[#1A1A1A]
+                            dark:text-slate-100
                         "
                     >
                         Health Card Not Available
@@ -279,6 +290,7 @@ export default function HealthCardPage() {
                         className="
                             mt-2
                             text-[#4A4A4A]
+                            dark:text-slate-400
                         "
                     >
                         No health card information is currently available.
@@ -323,7 +335,9 @@ export default function HealthCardPage() {
                             py-1
                             rounded-full
                             bg-[#D8F3DC]
+                            dark:bg-emerald-950
                             text-[#1B4332]
+                            dark:text-emerald-300
                             text-xs
                             sm:text-sm
                             font-bold
@@ -342,6 +356,7 @@ export default function HealthCardPage() {
                             lg:text-3xl
                             font-bold
                             text-[#1B4332]
+                            dark:text-emerald-400
                         "
                     >
                         My Health Card
@@ -351,6 +366,7 @@ export default function HealthCardPage() {
                         className="
                             mt-1
                             text-[#1A1A1A]
+                            dark:text-slate-300
                             text-sm
                             sm:text-base
                             font-medium
@@ -363,7 +379,7 @@ export default function HealthCardPage() {
                 <ShieldCheck
                     size={44}
                     strokeWidth={1.7}
-                    className="text-[#2D6A4F]"
+                    className="text-[#2D6A4F] dark:text-emerald-400"
                 />
             </div>
 
@@ -374,9 +390,11 @@ export default function HealthCardPage() {
             <div
                 className="
                     bg-white
+                    dark:bg-slate-900
                     rounded-[28px]
                     border
                     border-[#E8E0D5]
+                    dark:border-slate-800
                     shadow-[0_18px_50px_rgba(45,106,79,0.10)]
                     overflow-hidden
                 "
@@ -386,6 +404,7 @@ export default function HealthCardPage() {
                 <div
                     className="
                         bg-[#2D6A4F]
+                        dark:bg-emerald-800
                         text-white
                         px-5
                         sm:px-7
@@ -487,9 +506,11 @@ export default function HealthCardPage() {
                         <div
                             className="
                                 bg-[#FAF7F2]
+                                dark:bg-slate-800
                                 rounded-2xl
                                 border
                                 border-[#E8E0D5]
+                                dark:border-slate-700
                                 p-3.5
                                 shadow-sm
                             "
@@ -506,6 +527,8 @@ export default function HealthCardPage() {
                                     lg:h-40
                                     object-contain
                                     rounded-lg
+                                    bg-white
+                                    p-1
                                 "
                             />
                         </div>
@@ -515,6 +538,7 @@ export default function HealthCardPage() {
                                 mt-3
                                 text-center
                                 text-[#1A1A1A]
+                                dark:text-slate-100
                                 font-semibold
                                 text-sm
                             "
@@ -527,6 +551,7 @@ export default function HealthCardPage() {
                                 mt-0.5
                                 text-center
                                 text-[#4A4A4A]
+                                dark:text-slate-400
                                 text-xs
                             "
                         >
@@ -545,6 +570,8 @@ export default function HealthCardPage() {
                                 gap-2
                                 bg-[#2D6A4F]
                                 hover:bg-[#1B4332]
+                                dark:bg-emerald-600
+                                dark:hover:bg-emerald-500
                                 text-white
                                 px-5
                                 py-2.5
@@ -653,6 +680,7 @@ export default function HealthCardPage() {
                                 pt-4
                                 border-t
                                 border-[#E8E0D5]
+                                dark:border-slate-800
                                 flex
                                 flex-col
                                 sm:flex-row
@@ -669,6 +697,8 @@ export default function HealthCardPage() {
                                     gap-2
                                     bg-[#2D6A4F]
                                     hover:bg-[#1B4332]
+                                    dark:bg-emerald-600
+                                    dark:hover:bg-emerald-500
                                     text-white
                                     px-5
                                     py-3
@@ -703,9 +733,12 @@ function InfoCard({ icon, title, value }) {
             className="
                 group
                 bg-[#FAF7F2]
+                dark:bg-slate-800/80
                 hover:bg-[#F2EDE4]
+                dark:hover:bg-slate-800
                 border
                 border-[#E8E0D5]
+                dark:border-slate-700
                 rounded-xl
                 p-3.5
                 sm:p-4
@@ -721,6 +754,7 @@ function InfoCard({ icon, title, value }) {
                     items-center
                     gap-2
                     text-[#2D6A4F]
+                    dark:text-emerald-400
                     font-bold
                     text-sm
                 "
@@ -736,6 +770,7 @@ function InfoCard({ icon, title, value }) {
                 className="
                     mt-1.5
                     text-[#1A1A1A]
+                    dark:text-slate-100
                     font-semibold
                     text-sm
                     sm:text-[15px]

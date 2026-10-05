@@ -29,9 +29,12 @@ const emergencyEventSchema = new mongoose.Schema(
             type: String,
             enum: [
                 "detected",
+                "declared",
+                "active",
                 "alert_sent",
                 "acknowledged",
                 "resolved",
+                "cancelled",
                 "failed",
             ],
             default: "detected",
@@ -41,6 +44,10 @@ const emergencyEventSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+
+        // ============================================================
+        // SMS
+        // ============================================================
 
         smsRequestId: {
             type: String,
@@ -57,6 +64,25 @@ const emergencyEventSchema = new mongoose.Schema(
             ],
             default: "not_sent",
         },
+
+        // ============================================================
+        // CALL
+        // ============================================================
+
+        callStatus: {
+            type: String,
+            enum: [
+                "not_initiated",
+                "initiated",
+                "completed",
+                "failed",
+            ],
+            default: "not_initiated",
+        },
+
+        // ============================================================
+        // REFERENCES
+        // ============================================================
 
         band: {
             type: mongoose.Schema.Types.ObjectId,
@@ -144,6 +170,11 @@ const emergencyEventSchema = new mongoose.Schema(
         detectedAt: {
             type: Date,
             default: Date.now,
+        },
+
+        declaredAt: {
+            type: Date,
+            default: null,
         },
 
         resolvedAt: {

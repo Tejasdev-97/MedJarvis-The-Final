@@ -14,125 +14,244 @@ import {
 } from "lucide-react";
 import api from "../services/api";
 import { io } from "socket.io-client";
+import {
+    connectMedJarvisBand,
+    disconnectMedJarvisBand,
+    isWebBluetoothSupported,
+    scanForMedJarvisBand,
+    sendBandCommand,
+} from "../services/bleBand";
 
 const BAND_ID = "BAND-MJ-001";
 
-export default function MyHealthPage() {
-    const profile = JSON.parse(localStorage.getItem("profile") || "null");
-    const patientId =
-        typeof profile?.patient === "object"
-            ? profile.patient?._id
-            : profile?.patient;
-
-    const [displayVital, setDisplayVital] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [isLive, setIsLive] = useState(false);
-    const [lastUpdated, setLastUpdated] = useState(null);
-
-    const [selectedMode, setSelectedMode] = useState("spot");
-    const [monitoringActive, setMonitoringActive] = useState(false);
-    const [starting, setStarting] = useState(false);
-    const [stopping, setStopping] = useState(false);
-
-    const [sensorStatus, setSensorStatus] = useState("IDLE");
-    const [sensorMessage, setSensorMessage] = useState(
-        "Ready to start health monitoring."
+export default function MyHealthPage({ overridePatientId }) {
+    const profile = JSON.parse(
+        localStorage.getItem("profile") || "null"
     );
-    const [remainingSeconds, setRemainingSeconds] = useState(null);
-    const [sensorMode, setSensorMode] = useState(null);
 
-    const countdownEndRef = useRef(null);
-    const [countdownSequence, setCountdownSequence] = useState(0);
+    const patientId =
+        overridePatientId ||
+        (typeof profile?.patient === "object"
+            ? profile.patient?._id
+            : profile?.patient);
 
-    const [ppgWaveform, setPpgWaveform] = useState([]);
-    const [ppgBeatPositions, setPpgBeatPositions] = useState([]);
-    const [waveformSequence, setWaveformSequence] = useState(0);
+    const [displayVital, setDisplayVital] =
+        useState(null);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+    const [isLive, setIsLive] =
+        useState(false);
+
+    const [lastUpdated, setLastUpdated] =
+        useState(null);
+
+    const [selectedMode, setSelectedMode] =
+        useState("spot");
+
+    const [monitoringActive, setMonitoringActive] =
+        useState(false);
+
+    const [starting, setStarting] =
+        useState(false);
+
+    const [stopping, setStopping] =
+        useState(false);
+
+    const [sensorStatus, setSensorStatus] =
+        useState("IDLE");
+
+    const [sensorMessage, setSensorMessage] =
+        useState(
+            "Ready to start health monitoring."
+        );
+
+    const [remainingSeconds, setRemainingSeconds] =
+        useState(null);
+
+    const [sensorMode, setSensorMode] =
+        useState(null);
+
+    const countdownEndRef =
+        useRef(null);
+
+    const [countdownSequence, setCountdownSequence] =
+        useState(0);
+
+    const [ppgWaveform, setPpgWaveform] =
+        useState([]);
+
+    const [ppgBeatPositions, setPpgBeatPositions] =
+        useState([]);
+
+    const [waveformSequence, setWaveformSequence] =
+        useState(0);
+
+    // ============================================================
+    // BLE / MEDJARVIS BAND STATE
+    // ============================================================
+
+    const [bleModalOpen, setBleModalOpen] =
+        useState(false);
+
+    const [bleScanning, setBleScanning] =
+        useState(false);
+
+    const [bleConnecting, setBleConnecting] =
+        useState(false);
+
+    const [bleConnected, setBleConnected] =
+        useState(false);
+
+    const [bleAuthorized, setBleAuthorized] =
+        useState(false);
+
+    const [bleBandId, setBleBandId] =
+        useState("");
+
+    const [bleCandidate, setBleCandidate] =
+        useState(null);
+
+    const [bleError, setBleError] =
+        useState("");
+
+    // ============================================================
+    // INITIAL LOAD + SOCKET.IO
+    // ============================================================
 
     useEffect(() => {
         if (!patientId) {
-            setError("Patient profile is not linked to a patient record.");
+            setError(
+                "Patient profile is not linked to a patient record."
+            );
+
             setLoading(false);
             return;
         }
 
         let mounted = true;
 
-        const loadInitialVital = async () => {
-            try {
-                const response = await api.get(
-                    `/vitals/latest/${patientId}`
-                );
+        const loadInitialVital =
+            async () => {
+                try {
+                    const response =
+                        await api.get(
+                            `/vitals/latest/${patientId}`
+                        );
 
-                if (mounted && response.data?.success) {
-                    setDisplayVital(
-                        response.data.data || null
-                    );
-                    setError("");
+                    if (
+                        mounted &&
+                        response.data
+                            ?.success
+                    ) {
+                        setDisplayVital(
+                            response.data
+                                .data ||
+                            null
+                        );
+
+                        setError("");
+                    }
+                } catch (err) {
+                    if (
+                        mounted &&
+                        err.response
+                            ?.status !== 404
+                    ) {
+                        setError(
+                            err.response
+                                ?.data
+                                ?.message ||
+                            "Unable to load your latest health reading."
+                        );
+                    }
+                } finally {
+                    if (mounted) {
+                        setLoading(
+                            false
+                        );
+                    }
                 }
-            } catch (err) {
-                if (
-                    mounted &&
-                    err.response?.status !== 404
-                ) {
-                    setError(
-                        err.response?.data?.message ||
-                        "Unable to load your latest health reading."
-                    );
-                }
-            } finally {
-                if (mounted) {
-                    setLoading(false);
-                }
-            }
-        };
+            };
 
         loadInitialVital();
 
-        const socket = io(
-            import.meta.env.VITE_API_URL?.replace(
-                "/api",
-                ""
-            ) || "http://localhost:5000"
+        const socket =
+            io(
+                import.meta.env
+                    .VITE_API_URL?.replace(
+                        "/api",
+                        ""
+                    ) ||
+                "http://localhost:5000"
+            );
+
+        socket.on(
+            "connect",
+            () => {
+                if (!mounted) {
+                    return;
+                }
+
+                setIsLive(true);
+
+                socket.emit(
+                    "joinPatient",
+                    patientId
+                );
+            }
         );
 
-        socket.on("connect", () => {
-            if (!mounted) return;
-
-            setIsLive(true);
-
-            socket.emit(
-                "joinPatient",
-                patientId
-            );
-        });
-
-        socket.on("disconnect", () => {
-            if (mounted) {
-                setIsLive(false);
+        socket.on(
+            "disconnect",
+            () => {
+                if (mounted) {
+                    setIsLive(false);
+                }
             }
-        });
+        );
 
-        socket.on("connect_error", (err) => {
-            console.error(
-                "LIVE VITAL SOCKET ERROR:",
-                err.message
-            );
+        socket.on(
+            "connect_error",
+            (err) => {
+                console.error(
+                    "LIVE VITAL SOCKET ERROR:",
+                    err.message
+                );
 
-            if (mounted) {
-                setIsLive(false);
+                if (mounted) {
+                    setIsLive(false);
+                }
             }
-        });
+        );
+
+        // ========================================================
+        // BACKEND SENSOR STATUS
+        //
+        // This listener remains intentionally because the backend
+        // still broadcasts sensor status through Socket.IO after
+        // the BLE frontend bridge forwards data/control.
+        // ========================================================
 
         socket.on(
             "sensorStatus",
             (statusData) => {
-                if (!mounted) return;
+                if (!mounted) {
+                    return;
+                }
 
                 if (
                     statusData?.patientId &&
-                    String(statusData.patientId) !==
-                    String(patientId)
+                    String(
+                        statusData.patientId
+                    ) !==
+                    String(
+                        patientId
+                    )
                 ) {
                     return;
                 }
@@ -141,7 +260,9 @@ export default function MyHealthPage() {
                     statusData?.status ||
                     "UNKNOWN";
 
-                setSensorStatus(status);
+                setSensorStatus(
+                    status
+                );
 
                 setSensorMessage(
                     statusData?.message ||
@@ -164,12 +285,17 @@ export default function MyHealthPage() {
                 ) {
                     setDisplayVital(
                         (previous) => ({
-                            ...(previous || {}),
+                            ...(previous ||
+                                {}),
                             spo2: null,
-                            heartRate: null,
-                            hrvSDNN: null,
-                            temperature: null,
-                            signalQuality: null,
+                            heartRate:
+                                null,
+                            hrvSDNN:
+                                null,
+                            temperature:
+                                null,
+                            signalQuality:
+                                null,
                             measurementConfidence:
                                 null,
                             spo2Confidence:
@@ -186,8 +312,13 @@ export default function MyHealthPage() {
                         })
                     );
 
-                    setPpgWaveform([]);
-                    setPpgBeatPositions([]);
+                    setPpgWaveform(
+                        []
+                    );
+
+                    setPpgBeatPositions(
+                        []
+                    );
 
                     setWaveformSequence(
                         (value) =>
@@ -213,7 +344,8 @@ export default function MyHealthPage() {
 
                     countdownEndRef.current =
                         Date.now() +
-                        duration * 1000;
+                        duration *
+                        1000;
 
                     setRemainingSeconds(
                         duration
@@ -245,15 +377,22 @@ export default function MyHealthPage() {
             }
         );
 
+        // ========================================================
+        // BACKEND VITAL SOCKET
+        // ========================================================
+
         socket.on(
             "newVital",
             (vital) => {
-                if (!mounted) return;
+                if (!mounted) {
+                    return;
+                }
 
                 const vitalPatient =
                     typeof vital?.patient ===
                         "object"
-                        ? vital.patient?._id
+                        ? vital.patient
+                            ?._id
                         : vital?.patient;
 
                 if (
@@ -261,7 +400,9 @@ export default function MyHealthPage() {
                     String(
                         vitalPatient
                     ) !==
-                    String(patientId)
+                    String(
+                        patientId
+                    )
                 ) {
                     return;
                 }
@@ -285,7 +426,9 @@ export default function MyHealthPage() {
                             vital?.ppgBeatPositions
                         )
                             ? vital.ppgBeatPositions
-                                .map(Number)
+                                .map(
+                                    Number
+                                )
                                 .filter(
                                     Number.isInteger
                                 )
@@ -295,7 +438,9 @@ export default function MyHealthPage() {
                         vital?.mode ===
                         "continuous";
 
-                    if (isContinuousPacket) {
+                    if (
+                        isContinuousPacket
+                    ) {
                         const appendCount =
                             Math.min(
                                 100,
@@ -349,14 +494,18 @@ export default function MyHealthPage() {
                                 const shiftedOldBeats =
                                     previous
                                         .map(
-                                            (position) =>
+                                            (
+                                                position
+                                            ) =>
                                                 Number(
                                                     position
                                                 ) -
                                                 trimCount
                                         )
                                         .filter(
-                                            (position) =>
+                                            (
+                                                position
+                                            ) =>
                                                 Number.isInteger(
                                                     position
                                                 ) &&
@@ -367,14 +516,18 @@ export default function MyHealthPage() {
                                 const newBeats =
                                     incomingBeats
                                         .filter(
-                                            (position) =>
+                                            (
+                                                position
+                                            ) =>
                                                 position >=
                                                 appendStart &&
                                                 position <
                                                 incomingSamples.length
                                         )
                                         .map(
-                                            (position) =>
+                                            (
+                                                position
+                                            ) =>
                                                 previous.length +
                                                 (position -
                                                     appendStart) -
@@ -386,15 +539,20 @@ export default function MyHealthPage() {
                                     ...newBeats,
                                 ]
                                     .filter(
-                                        (position) =>
-                                            position >= 0 &&
+                                        (
+                                            position
+                                        ) =>
+                                            position >=
+                                            0 &&
                                             position <
                                             Math.min(
                                                 256,
                                                 combinedLength
                                             )
                                     )
-                                    .slice(-16);
+                                    .slice(
+                                        -16
+                                    );
                             }
                         );
                     } else {
@@ -407,12 +565,17 @@ export default function MyHealthPage() {
                         setPpgBeatPositions(
                             incomingBeats
                                 .filter(
-                                    (position) =>
-                                        position >= 0 &&
+                                    (
+                                        position
+                                    ) =>
+                                        position >=
+                                        0 &&
                                         position <
                                         incomingSamples.length
                                 )
-                                .slice(-16)
+                                .slice(
+                                    -16
+                                )
                         );
                     }
 
@@ -538,17 +701,25 @@ export default function MyHealthPage() {
             }
         );
 
+        // ========================================================
+        // BACKEND MONITORING STATE
+        // ========================================================
+
         socket.on(
             "monitoringState",
             (stateData) => {
-                if (!mounted) return;
+                if (!mounted) {
+                    return;
+                }
 
                 if (
                     stateData?.patientId &&
                     String(
                         stateData.patientId
                     ) !==
-                    String(patientId)
+                    String(
+                        patientId
+                    )
                 ) {
                     return;
                 }
@@ -597,6 +768,10 @@ export default function MyHealthPage() {
             socket.disconnect();
         };
     }, [patientId]);
+
+    // ============================================================
+    // COUNTDOWN
+    // ============================================================
 
     useEffect(() => {
         if (
@@ -649,92 +824,15 @@ export default function MyHealthPage() {
         sensorStatus,
     ]);
 
-    useEffect(() => {
-        if (!patientId) {
-            return;
-        }
-
-        let mounted = true;
-
-        const checkMonitoringState =
-            async () => {
-                try {
-                    const response =
-                        await api.get(
-                            `/vitals/control/${BAND_ID}`
-                        );
-
-                    if (
-                        !mounted ||
-                        !response.data
-                            ?.success
-                    ) {
-                        return;
-                    }
-
-                    const active =
-                        response.data
-                            .active ===
-                        true;
-
-                    setMonitoringActive(
-                        active
-                    );
-
-                    if (active) {
-                        setSensorMode(
-                            response.data
-                                .mode ||
-                            null
-                        );
-                    } else {
-                        setRemainingSeconds(
-                            null
-                        );
-
-                        setSensorStatus(
-                            (previous) =>
-                                previous ===
-                                    "SESSION_COMPLETE" ||
-                                    previous ===
-                                    "SESSION_STOPPED"
-                                    ? previous
-                                    : "IDLE"
-                        );
-
-                        setSensorMessage(
-                            (previous) =>
-                                previous ===
-                                    "Spot monitoring completed. You can start a new monitoring session." ||
-                                    previous ===
-                                    "Monitoring stopped. You can start a new session."
-                                    ? previous
-                                    : "Ready to start health monitoring."
-                        );
-                    }
-                } catch (err) {
-                    console.error(
-                        "MONITORING STATE CHECK ERROR:",
-                        err
-                    );
-                }
-            };
-
-        checkMonitoringState();
-
-        const interval =
-            setInterval(
-                checkMonitoringState,
-                1000
-            );
-
-        return () => {
-            mounted = false;
-            clearInterval(
-                interval
-            );
-        };
-    }, [patientId]);
+    // ============================================================
+    // START MONITORING
+    //
+    // IMPORTANT:
+    // Backend session is created first.
+    // Then BLE START command is sent to ESP32.
+    //
+    // This preserves the existing MonitoringSession model.
+    // ============================================================
 
     const startMonitoring =
         async () => {
@@ -745,11 +843,35 @@ export default function MyHealthPage() {
                 return;
             }
 
+            if (
+                !bleConnected ||
+                !bleAuthorized
+            ) {
+                setBleModalOpen(
+                    true
+                );
+
+                setError(
+                    "Connect and authorize the MedJarvis Band before starting monitoring."
+                );
+
+                return;
+            }
+
             setStarting(true);
             setError("");
-            setDisplayVital(null);
-            setPpgWaveform([]);
-            setPpgBeatPositions([]);
+
+            setDisplayVital(
+                null
+            );
+
+            setPpgWaveform(
+                []
+            );
+
+            setPpgBeatPositions(
+                []
+            );
 
             setWaveformSequence(
                 (value) =>
@@ -781,29 +903,74 @@ export default function MyHealthPage() {
                     );
 
                 if (
-                    response.data
+                    !response.data
                         ?.success
                 ) {
-                    setMonitoringActive(
-                        true
+                    throw new Error(
+                        response.data
+                            ?.message ||
+                        "Unable to create the monitoring session."
                     );
+                }
 
-                    setSensorMode(
-                        selectedMode
-                    );
+                setMonitoringActive(
+                    true
+                );
 
-                    setSensorStatus(
-                        "STARTING"
-                    );
+                setSensorMode(
+                    selectedMode
+                );
 
-                    setSensorMessage(
-                        "Monitoring session started. Waiting for the ESP32 sensor..."
+                setSensorStatus(
+                    "STARTING"
+                );
+
+                setSensorMessage(
+                    "Monitoring session started. Starting the ESP32 sensor..."
+                );
+
+                const command =
+                    selectedMode ===
+                        "continuous"
+                        ? "START_CONTINUOUS"
+                        : "START_SPOT";
+
+                try {
+                    await sendBandCommand(
+                        command
                     );
+                } catch (
+                bleCommandError
+                ) {
+                    /*
+                     * Prevent an orphaned backend session if the
+                     * ESP32 could not receive the BLE command.
+                     */
+
+                    try {
+                        await api.post(
+                            "/vitals/control/stop",
+                            {
+                                bandId:
+                                    BAND_ID,
+                            }
+                        );
+                    } catch (
+                    rollbackError
+                    ) {
+                        console.error(
+                            "MONITORING ROLLBACK ERROR:",
+                            rollbackError
+                        );
+                    }
+
+                    throw bleCommandError;
                 }
             } catch (err) {
                 setError(
                     err.response?.data
                         ?.message ||
+                    err.message ||
                     "Unable to start monitoring."
                 );
 
@@ -823,6 +990,10 @@ export default function MyHealthPage() {
             }
         };
 
+    // ============================================================
+    // STOP MONITORING
+    // ============================================================
+
     const stopMonitoring =
         async () => {
             if (stopping) {
@@ -840,6 +1011,31 @@ export default function MyHealthPage() {
             );
 
             try {
+                /*
+                 * ESP32 must receive STOP over BLE.
+                 *
+                 * The backend STOP call remains because it closes
+                 * the MonitoringSession and releases the Band.
+                 */
+
+                if (
+                    bleConnected &&
+                    bleAuthorized
+                ) {
+                    try {
+                        await sendBandCommand(
+                            "STOP"
+                        );
+                    } catch (
+                    bleCommandError
+                    ) {
+                        console.warn(
+                            "BLE STOP command warning:",
+                            bleCommandError
+                        );
+                    }
+                }
+
                 const response =
                     await api.post(
                         "/vitals/control/stop",
@@ -873,11 +1069,867 @@ export default function MyHealthPage() {
                 setError(
                     err.response?.data
                         ?.message ||
+                    err.message ||
                     "Unable to stop monitoring."
                 );
             } finally {
                 setStopping(false);
             }
+        };
+
+    // ============================================================
+    // BLE STATUS HANDLER
+    // ============================================================
+
+    const handleBleStatus =
+        async (
+            statusData
+        ) => {
+            if (!statusData) {
+                return;
+            }
+
+            /*
+             * Authorization response.
+             */
+
+            if (
+                statusData.type ===
+                "auth"
+            ) {
+                setBleAuthorized(
+                    statusData.authorized ===
+                    true
+                );
+
+                if (
+                    statusData.authorized ===
+                    true
+                ) {
+                    setBleError(
+                        ""
+                    );
+
+                    setSensorMessage(
+                        "MedJarvis Band authorized and ready."
+                    );
+                }
+
+                return;
+            }
+
+            const status =
+                statusData.status ||
+                "";
+
+            if (!status) {
+                return;
+            }
+
+            setSensorStatus(
+                status
+            );
+
+            setSensorMessage(
+                statusData.message ||
+                "Sensor status updated."
+            );
+
+            setSensorMode(
+                statusData.mode ||
+                null
+            );
+
+            if (
+                status ===
+                "MEASURING" &&
+                statusData.remainingSeconds !==
+                null &&
+                statusData.remainingSeconds !==
+                undefined
+            ) {
+                const duration =
+                    Math.max(
+                        0,
+                        Number(
+                            statusData.remainingSeconds
+                        ) || 0
+                    );
+
+                countdownEndRef.current =
+                    Date.now() +
+                    duration *
+                    1000;
+
+                setRemainingSeconds(
+                    duration
+                );
+
+                setCountdownSequence(
+                    (value) =>
+                        value + 1
+                );
+            } else {
+                countdownEndRef.current =
+                    null;
+
+                setRemainingSeconds(
+                    null
+                );
+            }
+
+            if (
+                status ===
+                "SESSION_COMPLETE"
+            ) {
+                setMonitoringActive(
+                    false
+                );
+
+                setRemainingSeconds(
+                    null
+                );
+
+                /*
+                 * ESP32 has completed its acquisition.
+                 * Close the backend MonitoringSession.
+                 */
+
+                try {
+                    await api.post(
+                        `/vitals/control/complete/${BAND_ID}`
+                    );
+                } catch (
+                completeError
+                ) {
+                    console.error(
+                        "MONITORING COMPLETE SYNC ERROR:",
+                        completeError
+                    );
+                }
+            }
+
+            if (
+                status ===
+                "SESSION_STOPPED"
+            ) {
+                setMonitoringActive(
+                    false
+                );
+
+                setRemainingSeconds(
+                    null
+                );
+            }
+
+            if (
+                status ===
+                "SENSOR_ERROR" ||
+                status ===
+                "COMMUNICATION_ERROR"
+            ) {
+                setError(
+                    statusData.message ||
+                    "The MedJarvis Band reported a sensor communication problem."
+                );
+            }
+        };
+
+    // ============================================================
+    // BLE VITALS HANDLER
+    // ============================================================
+
+    const handleBleVitals =
+        async (
+            vital
+        ) => {
+            if (!vital) {
+                return;
+            }
+
+            /*
+             * ESP32 does not need to know the patient's MongoDB ID.
+             * The active backend MonitoringSession already maps the
+             * Band to the patient.
+             *
+             * Adding patient here keeps the existing frontend
+             * display/socket contract intact.
+             */
+
+            const enrichedVital =
+            {
+                ...vital,
+                patient:
+                    patientId,
+                bandId:
+                    vital.bandId ||
+                    BAND_ID,
+            };
+
+            /*
+             * Spot final and Continuous physiological snapshots
+             * can contain a 256-sample PPG snapshot.
+             *
+             * Live PPG is separately streamed over BLE and handled
+             * below by handleBlePPG().
+             */
+
+            if (
+                Array.isArray(
+                    vital.ppgWaveform
+                ) &&
+                vital.ppgWaveform
+                    .length > 1
+            ) {
+                const incomingSamples =
+                    vital.ppgWaveform
+                        .map(Number)
+                        .filter(
+                            Number.isFinite
+                        );
+
+                const incomingBeats =
+                    Array.isArray(
+                        vital.ppgBeatPositions
+                    )
+                        ? vital.ppgBeatPositions
+                            .map(
+                                Number
+                            )
+                            .filter(
+                                Number.isInteger
+                            )
+                        : [];
+
+                setPpgWaveform(
+                    incomingSamples.slice(
+                        -256
+                    )
+                );
+
+                setPpgBeatPositions(
+                    incomingBeats
+                        .filter(
+                            (
+                                position
+                            ) =>
+                                position >=
+                                0 &&
+                                position <
+                                incomingSamples.length
+                        )
+                        .slice(-16)
+                );
+
+                setWaveformSequence(
+                    (value) =>
+                        value + 1
+                );
+            }
+
+            setDisplayVital(
+                (previous) => {
+                    if (!previous) {
+                        return {
+                            ...enrichedVital,
+                        };
+                    }
+
+                    return {
+                        ...previous,
+                        ...enrichedVital,
+
+                        spo2:
+                            vital.spo2 !=
+                                null
+                                ? vital.spo2
+                                : previous.spo2,
+
+                        heartRate:
+                            vital.heartRate !=
+                                null
+                                ? vital.heartRate
+                                : previous.heartRate,
+
+                        hrvSDNN:
+                            vital.hrvSDNN !=
+                                null
+                                ? vital.hrvSDNN
+                                : previous.hrvSDNN,
+
+                        measurementConfidence:
+                            vital.measurementConfidence !=
+                                null
+                                ? vital.measurementConfidence
+                                : previous.measurementConfidence,
+
+                        spo2Confidence:
+                            vital.spo2Confidence !=
+                                null
+                                ? vital.spo2Confidence
+                                : previous.spo2Confidence,
+
+                        heartRateConfidence:
+                            vital.heartRateConfidence !=
+                                null
+                                ? vital.heartRateConfidence
+                                : previous.heartRateConfidence,
+
+                        hrvConfidence:
+                            vital.hrvConfidence !=
+                                null
+                                ? vital.hrvConfidence
+                                : previous.hrvConfidence,
+
+                        temperature:
+                            vital.temperature !=
+                                null
+                                ? vital.temperature
+                                : previous.temperature,
+
+                        signalQuality:
+                            vital.signalQuality !=
+                                null
+                                ? vital.signalQuality
+                                : previous.signalQuality,
+
+                        tilt:
+                            vital.tilt !=
+                                null
+                                ? vital.tilt
+                                : previous.tilt,
+
+                        accelMagnitude:
+                            vital.accelMagnitude !=
+                                null
+                                ? vital.accelMagnitude
+                                : previous.accelMagnitude,
+
+                        gyroMagnitude:
+                            vital.gyroMagnitude !=
+                                null
+                                ? vital.gyroMagnitude
+                                : previous.gyroMagnitude,
+                    };
+                }
+            );
+
+            if (
+                vital.signalQuality !=
+                null
+            ) {
+                setSensorMessage(
+                    getSignalQualityMessage(
+                        vital.signalQuality
+                    )
+                );
+            }
+
+            setLastUpdated(
+                new Date()
+            );
+
+            setError("");
+            setIsLive(true);
+
+            if (
+                vital.mode ===
+                "spot"
+            ) {
+                setSensorMessage(
+                    "Reading received. Finalizing the Spot measurement..."
+                );
+            }
+
+            /*
+             * Existing backend remains responsible for persistence.
+             *
+             * ESP32:
+             * BLE -> frontend
+             *
+             * Frontend:
+             * POST /vitals -> existing controller -> MongoDB
+             */
+
+            try {
+                await api.post(
+                    "/vitals",
+                    enrichedVital
+                );
+            } catch (
+            persistError
+            ) {
+                console.error(
+                    "BLE VITAL PERSISTENCE ERROR:",
+                    persistError
+                );
+            }
+        };
+
+    // ============================================================
+    // BLE LIVE PPG HANDLER
+    // ============================================================
+
+    const handleBlePPG =
+        (
+            packet
+        ) => {
+            if (
+                !packet?.samples
+                    ?.length
+            ) {
+                return;
+            }
+
+            const incomingSamples =
+                packet.samples
+                    .map(Number)
+                    .filter(
+                        Number.isFinite
+                    );
+
+            if (
+                !incomingSamples.length
+            ) {
+                return;
+            }
+
+            const appendCount =
+                incomingSamples.length;
+
+            setPpgWaveform(
+                (previous) => {
+                    const combinedLength =
+                        previous.length +
+                        appendCount;
+
+                    const trimCount =
+                        Math.max(
+                            0,
+                            combinedLength -
+                            256
+                        );
+
+                    return [
+                        ...previous,
+                        ...incomingSamples,
+                    ].slice(
+                        trimCount
+                    );
+                }
+            );
+
+            setPpgBeatPositions(
+                (previous) => {
+                    const newBeats =
+                        packet.beatPositions ||
+                        [];
+
+                    const shiftedOldBeats =
+                        previous
+                            .map(
+                                (
+                                    position
+                                ) =>
+                                    Number(
+                                        position
+                                    ) -
+                                    appendCount
+                            )
+                            .filter(
+                                (
+                                    position
+                                ) =>
+                                    Number.isInteger(
+                                        position
+                                    ) &&
+                                    position >=
+                                    0
+                            );
+
+                    const localNewBeats =
+                        newBeats.map(
+                            (
+                                position
+                            ) =>
+                                previous.length +
+                                position
+                        );
+
+                    return [
+                        ...shiftedOldBeats,
+                        ...localNewBeats,
+                    ]
+                        .filter(
+                            (
+                                position
+                            ) =>
+                                position >=
+                                0 &&
+                                position <
+                                Math.min(
+                                    256,
+                                    previous.length +
+                                    appendCount
+                                )
+                        )
+                        .slice(
+                            -16
+                        );
+                }
+            );
+
+            setWaveformSequence(
+                (value) =>
+                    value + 1
+            );
+
+            setLastUpdated(
+                new Date()
+            );
+
+            setIsLive(true);
+        };
+
+    // ============================================================
+    // BLE EMERGENCY HANDLER
+    // ============================================================
+
+    const handleBleEmergency =
+        async (
+            emergency
+        ) => {
+            if (!emergency) {
+                return;
+            }
+
+            setSensorMessage(
+                "Emergency event received from the MedJarvis Band."
+            );
+
+            try {
+                await api.post(
+                    "/emergency",
+                    {
+                        ...emergency,
+                        bandId:
+                            emergency.bandId ||
+                            BAND_ID,
+                    }
+                );
+            } catch (
+            emergencyError
+            ) {
+                console.error(
+                    "BLE EMERGENCY FORWARD ERROR:",
+                    emergencyError
+                );
+
+                setError(
+                    emergencyError
+                        .response
+                        ?.data
+                        ?.message ||
+                    emergencyError.message ||
+                    "Unable to forward the emergency event to the backend."
+                );
+            }
+        };
+
+    // ============================================================
+    // BLE PAGE LIFECYCLE
+    // ============================================================
+
+    useEffect(() => {
+        if (
+            !isWebBluetoothSupported()
+        ) {
+            return undefined;
+        }
+
+        return () => {
+            disconnectMedJarvisBand().catch(
+                (error) =>
+                    console.warn(
+                        "BLE cleanup warning:",
+                        error
+                    )
+            );
+        };
+    }, []);
+
+    // ============================================================
+    // BLE MODAL
+    // ============================================================
+
+    const openBleModal =
+        () => {
+            setBleError("");
+
+            setBleModalOpen(
+                true
+            );
+        };
+
+    const closeBleModal =
+        () => {
+            if (
+                bleScanning ||
+                bleConnecting
+            ) {
+                return;
+            }
+
+            setBleModalOpen(
+                false
+            );
+
+            setBleError("");
+        };
+
+    // ============================================================
+    // BLE SCAN
+    //
+    // This only opens the browser BLE chooser.
+    // It does NOT connect to the ESP32.
+    // ============================================================
+
+    const scanForBand =
+        async () => {
+            setBleError("");
+            setBleScanning(
+                true
+            );
+
+            try {
+                const device =
+                    await scanForMedJarvisBand();
+
+                setBleCandidate(
+                    device
+                );
+
+                setBleBandId(
+                    device.name ||
+                    "MedJarvis Band"
+                );
+            } catch (err) {
+                /*
+                 * User closing the native chooser is not a real
+                 * application error.
+                 */
+
+                if (
+                    err?.name !==
+                    "NotFoundError"
+                ) {
+                    setBleError(
+                        err.message ||
+                        "Unable to scan for the MedJarvis Band."
+                    );
+                }
+            } finally {
+                setBleScanning(
+                    false
+                );
+            }
+        };
+
+    // ============================================================
+    // BLE CONNECT
+    //
+    // This is the point where the GATT connection is actually
+    // established, only after the user explicitly presses
+    // "Connect Band".
+    // ============================================================
+
+    const connectToBand =
+        async () => {
+            if (
+                !bleCandidate
+            ) {
+                return;
+            }
+
+            setBleError("");
+            setBleConnecting(
+                true
+            );
+
+            try {
+                const result =
+                    await connectMedJarvisBand(
+                        bleCandidate,
+                        {
+                            onConnected:
+                                ({
+                                    bandId,
+                                }) => {
+                                    if (
+                                        bandId
+                                    ) {
+                                        setBleBandId(
+                                            bandId
+                                        );
+                                    }
+
+                                    setBleConnected(
+                                        true
+                                    );
+                                },
+
+                            onAuthorized:
+                                (
+                                    authData
+                                ) => {
+                                    if (
+                                        authData?.authorized
+                                    ) {
+                                        setBleAuthorized(
+                                            true
+                                        );
+
+                                        setBleError(
+                                            ""
+                                        );
+                                    }
+                                },
+
+                            onStatus:
+                                handleBleStatus,
+
+                            onVitals:
+                                handleBleVitals,
+
+                            onPPG:
+                                handleBlePPG,
+
+                            onEmergency:
+                                handleBleEmergency,
+
+                            onDisconnected:
+                                () => {
+                                    setBleConnected(
+                                        false
+                                    );
+
+                                    setBleAuthorized(
+                                        false
+                                    );
+
+                                    setBleCandidate(
+                                        null
+                                    );
+
+                                    setBleBandId(
+                                        ""
+                                    );
+
+                                    if (
+                                        monitoringActive
+                                    ) {
+                                        setMonitoringActive(
+                                            false
+                                        );
+
+                                        setRemainingSeconds(
+                                            null
+                                        );
+
+                                        setSensorStatus(
+                                            "SESSION_STOPPED"
+                                        );
+
+                                        setSensorMessage(
+                                            "The MedJarvis Band disconnected. Monitoring has stopped."
+                                        );
+                                    }
+                                },
+                        }
+                    );
+
+                if (
+                    result?.bandId
+                ) {
+                    setBleBandId(
+                        result.bandId
+                    );
+                }
+
+                setBleConnected(
+                    true
+                );
+
+                setBleAuthorized(
+                    true
+                );
+
+                setBleModalOpen(
+                    false
+                );
+
+                setSensorMessage(
+                    "MedJarvis Band connected and authorized. Ready to monitor."
+                );
+
+                setError("");
+            } catch (err) {
+                setBleConnected(
+                    false
+                );
+
+                setBleAuthorized(
+                    false
+                );
+
+                setBleError(
+                    err.message ||
+                    "Unable to connect to the MedJarvis Band."
+                );
+            } finally {
+                setBleConnecting(
+                    false
+                );
+            }
+        };
+
+    // ============================================================
+    // BLE DISCONNECT
+    // ============================================================
+
+    const disconnectBand =
+        async () => {
+            if (
+                monitoringActive
+            ) {
+                setError(
+                    "Stop monitoring before disconnecting the MedJarvis Band."
+                );
+
+                return;
+            }
+
+            await disconnectMedJarvisBand();
+
+            setBleConnected(
+                false
+            );
+
+            setBleAuthorized(
+                false
+            );
+
+            setBleCandidate(
+                null
+            );
+
+            setBleBandId(
+                ""
+            );
+
+            setBleModalOpen(
+                false
+            );
         };
 
     const activeMonitoring =
@@ -888,6 +1940,10 @@ export default function MyHealthPage() {
         ].includes(
             sensorStatus
         );
+
+    // ============================================================
+    // VALIDATION HELPERS
+    // ============================================================
 
     const hasValidHR =
         Number.isFinite(
@@ -993,14 +2049,19 @@ export default function MyHealthPage() {
             return `Updated ${seconds} sec ago`;
         };
 
+    // ============================================================
+    // UI
+    // ============================================================
+
     return (
-        <div className="h-full min-h-0 overflow-hidden text-gray-900">
+        <div className="h-full min-h-0 overflow-hidden text-gray-900 dark:text-slate-100">
             <style>{`
                 @keyframes softPulse {
                     0%, 100% {
                         transform: scale(1);
                         opacity: 1;
                     }
+
                     50% {
                         transform: scale(1.08);
                         opacity: .82;
@@ -1012,6 +2073,7 @@ export default function MyHealthPage() {
                         transform: translateY(0);
                         opacity: .35;
                     }
+
                     35% {
                         transform: translateY(-6px);
                         opacity: 1;
@@ -1041,6 +2103,7 @@ export default function MyHealthPage() {
                     0%, 100% {
                         opacity: .78;
                     }
+
                     50% {
                         opacity: 1;
                     }
@@ -1054,54 +2117,98 @@ export default function MyHealthPage() {
             <div className="h-full min-h-0 overflow-y-auto xl:overflow-y-auto xl:overflow-x-hidden">
                 <div className="mx-auto flex min-h-full w-full max-w-[1600px] flex-col gap-3 pb-3">
 
+                    {/* ==================================================
+                        HEADER
+                    ================================================== */}
+
                     <div className="flex shrink-0 items-center justify-between gap-4 px-1">
                         <div>
-                            <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                            <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
                                 My Health
                             </h1>
 
-                            <p className="mt-0.5 text-sm text-gray-600">
+                            <p className="mt-0.5 text-sm text-gray-600 dark:text-slate-400">
                                 Monitor and view your latest health and sensor readings.
                             </p>
                         </div>
 
-                        <div className="hidden items-center gap-2 rounded-xl border border-[#E8E0D5] bg-white/80 px-4 py-2 shadow-sm sm:flex">
-                            <span
-                                className={`h-2.5 w-2.5 rounded-full ${isLive
-                                    ? "bg-green-500 animate-pulse"
-                                    : "bg-gray-300"
-                                    }`}
-                            />
+                        <div className="flex items-center gap-2">
 
-                            <div>
-                                <p className="text-[11px] font-semibold text-gray-700">
-                                    {isLive
-                                        ? "Live connection"
-                                        : "Waiting for sensor"}
-                                </p>
+                            {/* Existing Socket.IO connection indicator */}
+                            <div className="hidden items-center gap-2 rounded-xl border border-[#E8E0D5] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 py-2 shadow-sm sm:flex">
+                                <span
+                                    className={`h-2.5 w-2.5 rounded-full ${isLive
+                                            ? "bg-green-500 animate-pulse"
+                                            : "bg-gray-300 dark:bg-slate-600"
+                                        }`}
+                                />
 
-                                <p className="text-[10px] text-gray-600">
-                                    {getLastUpdatedText()}
-                                </p>
+                                <div>
+                                    <p className="text-[11px] font-semibold text-gray-700 dark:text-slate-200">
+                                        {isLive
+                                            ? "Live connection"
+                                            : "Waiting for sensor"}
+                                    </p>
+
+                                    <p className="text-[10px] text-gray-600 dark:text-slate-400">
+                                        {getLastUpdatedText()}
+                                    </p>
+                                </div>
                             </div>
+
+                            {/* ==================================================
+                                NEW BLE CONNECT BUTTON
+                            ================================================== */}
+
+                            <button
+                                type="button"
+                                onClick={
+                                    bleConnected
+                                        ? disconnectBand
+                                        : openBleModal
+                                }
+                                disabled={
+                                    monitoringActive &&
+                                    bleConnected
+                                }
+                                className={`flex h-10 items-center gap-2 rounded-xl px-3.5 text-xs font-semibold shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ${bleConnected
+                                        ? "border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                        : "bg-[#0E9F88] text-white hover:bg-[#0B8B77]"
+                                    }`}
+                            >
+                                <span
+                                    className={`h-2 w-2 rounded-full ${bleConnected &&
+                                            bleAuthorized
+                                            ? "bg-emerald-500 animate-pulse"
+                                            : "bg-white/80"
+                                        }`}
+                                />
+
+                                {bleConnected
+                                    ? `Band Connected${bleBandId
+                                        ? ` • ${bleBandId}`
+                                        : ""
+                                    }`
+                                    : "Connect MedJarvis Band"}
+                            </button>
                         </div>
                     </div>
 
                     {!patientId &&
                         !loading && (
-                            <div className="rounded-2xl border border-red-200 bg-white p-6">
-                                <p className="font-medium text-red-600">
+                            <div className="rounded-2xl border border-red-200 dark:border-red-900 bg-white dark:bg-slate-900 p-6">
+                                <p className="font-medium text-red-600 dark:text-red-400">
                                     {error}
                                 </p>
                             </div>
                         )}
 
                     {loading && (
-                        <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-[#E8E0D5] bg-white">
+                        <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-[#E8E0D5] dark:border-slate-800 bg-white dark:bg-slate-900">
                             <div className="text-center">
                                 <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-[#D8F3DC] border-t-[#2D6A4F]" />
 
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-gray-600 dark:text-slate-400">
                                     Loading your health monitoring panel...
                                 </p>
                             </div>
@@ -1111,6 +2218,10 @@ export default function MyHealthPage() {
                     {patientId &&
                         !loading && (
                             <>
+                                {/* ==================================================
+                                    HEALTH MONITORING
+                                ================================================== */}
+
                                 <section className="shrink-0 rounded-2xl bg-[#12384A] p-3 text-white shadow-sm">
                                     <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
 
@@ -1134,6 +2245,7 @@ export default function MyHealthPage() {
                                         </div>
 
                                         <div className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-2">
+
                                             <ModeButton
                                                 selected={
                                                     selectedMode ===
@@ -1149,7 +2261,9 @@ export default function MyHealthPage() {
                                                     )
                                                 }
                                                 icon={
-                                                    <Timer size={21} />
+                                                    <Timer
+                                                        size={21}
+                                                    />
                                                 }
                                                 title="Spot Monitoring"
                                                 description="One 60-second measurement with a final validated result."
@@ -1171,7 +2285,9 @@ export default function MyHealthPage() {
                                                     )
                                                 }
                                                 icon={
-                                                    <Radio size={21} />
+                                                    <Radio
+                                                        size={21}
+                                                    />
                                                 }
                                                 title="Continuous Monitoring"
                                                 description="Live telemetry ~1 sec; HR/SpO₂/HRV refine about every 15 sec."
@@ -1247,8 +2363,8 @@ export default function MyHealthPage() {
                                         <div className="flex min-w-0 items-center gap-2">
                                             <span
                                                 className={`h-2 w-2 shrink-0 rounded-full ${monitoringActive
-                                                    ? "bg-emerald-400 animate-pulse"
-                                                    : "bg-white/35"
+                                                        ? "bg-emerald-400 animate-pulse"
+                                                        : "bg-white/35"
                                                     }`}
                                             />
 
@@ -1281,6 +2397,10 @@ export default function MyHealthPage() {
                                         </div>
                                     </div>
                                 </section>
+
+                                {/* ==================================================
+                                    METRIC CARDS
+                                ================================================== */}
 
                                 <section className="grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
 
@@ -1408,6 +2528,10 @@ export default function MyHealthPage() {
                                     />
                                 </section>
 
+                                {/* ==================================================
+                                    PPG + CONFIDENCE
+                                ================================================== */}
+
                                 <section className="grid min-h-0 shrink-0 grid-cols-1 gap-3 xl:grid-cols-10">
 
                                     <div className="min-w-0 rounded-2xl bg-[#08283A] p-3 shadow-sm xl:col-span-7">
@@ -1436,7 +2560,7 @@ export default function MyHealthPage() {
                                                 </div>
 
                                                 <p className="text-[10px] text-white/75">
-                                                    MAX30102 optical pulse signal • normalized display • 100 Hz
+                                                    MAX30102 optical pulse signal • normalized display • 25 Hz
                                                 </p>
                                             </div>
 
@@ -1459,7 +2583,10 @@ export default function MyHealthPage() {
                                                         {ppgWaveform.length
                                                             ? `${(
                                                                 ppgWaveform.length /
-                                                                100
+                                                                (Number(
+                                                                    displayVital?.ppgSampleRateHz
+                                                                ) ||
+                                                                    25)
                                                             ).toFixed(
                                                                 2
                                                             )} s window`
@@ -1481,6 +2608,12 @@ export default function MyHealthPage() {
                                                     }
                                                     sequence={
                                                         waveformSequence
+                                                    }
+                                                    sampleRate={
+                                                        Number(
+                                                            displayVital?.ppgSampleRateHz
+                                                        ) ||
+                                                        25
                                                     }
                                                 />
                                             </div>
@@ -1583,8 +2716,8 @@ export default function MyHealthPage() {
                                             <div className="flex items-center gap-2">
                                                 <span
                                                     className={`h-2 w-2 rounded-full ${displayVital
-                                                        ? "bg-emerald-500 animate-pulse"
-                                                        : "bg-gray-300"
+                                                            ? "bg-emerald-500 animate-pulse"
+                                                            : "bg-gray-300"
                                                         }`}
                                                 />
 
@@ -1597,6 +2730,10 @@ export default function MyHealthPage() {
                                         </div>
                                     </div>
                                 </section>
+
+                                {/* ==================================================
+                                    ADDITIONAL READINGS
+                                ================================================== */}
 
                                 <section className="shrink-0 rounded-2xl border border-[#E8E0D5] bg-white p-3 shadow-sm">
                                     <div className="mb-2 flex items-center gap-2">
@@ -1615,6 +2752,7 @@ export default function MyHealthPage() {
                                     </div>
 
                                     <div className="grid grid-cols-1 divide-y divide-[#E8E0D5] sm:grid-cols-2 sm:divide-y-0 sm:divide-x lg:grid-cols-4">
+
                                         <AdditionalReading
                                             label="HRV (SDNN)"
                                             value={
@@ -1714,9 +2852,167 @@ export default function MyHealthPage() {
                         )}
                 </div>
             </div>
+
+            {/* ============================================================
+                BLE CONNECTION MODAL
+            ============================================================ */}
+
+            {bleModalOpen && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/45 px-4 backdrop-blur-sm"
+                    onMouseDown={(
+                        event
+                    ) => {
+                        if (
+                            event.target ===
+                            event.currentTarget
+                        ) {
+                            closeBleModal();
+                        }
+                    }}
+                >
+                    <div className="w-full max-w-md rounded-2xl border border-[#E8E0D5] bg-white p-5 shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2D6A4F]">
+                                    MedJarvis Wearable
+                                </p>
+
+                                <h2 className="mt-1 text-lg font-bold text-gray-900 dark:text-slate-100">
+                                    Connect MedJarvis Band
+                                </h2>
+
+                                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-slate-400">
+                                    The ESP32 advertises the MedJarvis BLE service. Your browser will only connect after you select the Band and confirm Connect here.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={
+                                    closeBleModal
+                                }
+                                disabled={
+                                    bleScanning ||
+                                    bleConnecting
+                                }
+                                className="rounded-lg px-2 py-1 text-lg text-gray-500 hover:bg-gray-100 disabled:opacity-40 dark:hover:bg-slate-800"
+                                aria-label="Close"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        {!isWebBluetoothSupported() && (
+                            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-xs leading-5 text-amber-800">
+                                Web Bluetooth is not available in this browser. Use Chrome/Chromium on a supported desktop or Android device.
+                            </div>
+                        )}
+
+                        {isWebBluetoothSupported() && (
+                            <>
+                                <div className="mt-4 rounded-xl border border-[#E8E0D5] bg-[#F7F9F7] p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E5F6EA] text-[#16804C]">
+                                            <Radio
+                                                size={20}
+                                            />
+                                        </div>
+
+                                        <div className="min-w-0">
+                                            <p className="text-xs font-semibold text-gray-900 dark:text-slate-100">
+                                                {bleCandidate
+                                                    ? "Band selected"
+                                                    : "No Band selected"}
+                                            </p>
+
+                                            <p className="mt-0.5 truncate text-[11px] text-gray-600 dark:text-slate-400">
+                                                {bleBandId ||
+                                                    "Click Scan to find a powered MedJarvis Band."}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            scanForBand
+                                        }
+                                        disabled={
+                                            bleScanning ||
+                                            bleConnecting
+                                        }
+                                        className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#2D6A4F] bg-white px-4 text-sm font-semibold text-[#2D6A4F] transition hover:bg-[#F1F8F3] disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-900"
+                                    >
+                                        <Radio
+                                            size={17}
+                                        />
+
+                                        {bleScanning
+                                            ? "Scanning..."
+                                            : "Scan for Band"}
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            connectToBand
+                                        }
+                                        disabled={
+                                            !bleCandidate ||
+                                            bleScanning ||
+                                            bleConnecting
+                                        }
+                                        className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0E9F88] px-4 text-sm font-semibold text-white transition hover:bg-[#0B8B77] disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        <ShieldCheck
+                                            size={17}
+                                        />
+
+                                        {bleConnecting
+                                            ? "Connecting..."
+                                            : "Connect Band"}
+                                    </button>
+                                </div>
+
+                                {bleCandidate && (
+                                    <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[11px] text-emerald-800">
+                                        <span className="font-semibold">
+                                            Selected:
+                                        </span>{" "}
+                                        {bleBandId}
+
+                                        <p className="mt-1 text-emerald-700/80">
+                                            Press Connect Band to establish the GATT connection and authorize the MedJarvis session.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {bleError && (
+                                    <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-xs leading-5 text-red-700">
+                                        {bleError}
+                                    </div>
+                                )}
+
+                                <p className="mt-4 text-[10px] leading-4 text-gray-500 dark:text-slate-500">
+                                    Only this MedJarvis page sends the application authorization token and monitoring commands. The ESP32 does not automatically start monitoring when a BLE connection is made.
+                                </p>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+
+// ================================================================
+// MODE BUTTON
+// ================================================================
 
 function ModeButton({
     selected,
@@ -1733,8 +3029,8 @@ function ModeButton({
             disabled={disabled}
             onClick={onClick}
             className={`group flex min-h-[64px] items-center gap-3 rounded-xl border px-3 text-left transition ${selected
-                ? `border-white/70 ${selectedClass}`
-                : "border-white/20 bg-white/5 text-white hover:bg-white/10"
+                    ? `border-white/70 ${selectedClass}`
+                    : "border-white/20 bg-white/5 text-white hover:bg-white/10"
                 } ${disabled
                     ? "cursor-not-allowed opacity-70"
                     : ""
@@ -1742,8 +3038,8 @@ function ModeButton({
         >
             <div
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${selected
-                    ? "bg-[#D8F3DC] text-[#2D6A4F]"
-                    : "bg-white/10 text-white"
+                        ? "bg-[#D8F3DC] text-[#2D6A4F]"
+                        : "bg-white/10 text-white"
                     }`}
             >
                 {icon}
@@ -1757,16 +3053,16 @@ function ModeButton({
 
                     <span
                         className={`h-3 w-3 rounded-full border-2 ${selected
-                            ? "border-[#1685FF] bg-white shadow-[inset_0_0_0_3px_white]"
-                            : "border-white/60"
+                                ? "border-[#1685FF] bg-white shadow-[inset_0_0_0_3px_white]"
+                                : "border-white/60"
                             }`}
                     />
                 </div>
 
                 <p
                     className={`mt-0.5 text-[10px] leading-3 ${selected
-                        ? "text-gray-600"
-                        : "text-white/80"
+                            ? "text-gray-600"
+                            : "text-white/80"
                         }`}
                 >
                     {description}
@@ -1775,6 +3071,10 @@ function ModeButton({
         </button>
     );
 }
+
+// ================================================================
+// METRIC CARD
+// ================================================================
 
 function MetricCard({
     label,
@@ -1871,8 +3171,8 @@ function MetricCard({
                     <div className="mt-1 flex items-center gap-1.5">
                         <span
                             className={`h-1.5 w-1.5 rounded-full ${active
-                                ? `${palette.dot} animate-pulse`
-                                : "bg-gray-300"
+                                    ? `${palette.dot} animate-pulse`
+                                    : "bg-gray-300"
                                 }`}
                         />
 
@@ -1901,6 +3201,10 @@ function MetricCard({
     );
 }
 
+// ================================================================
+// LOADING DOTS
+// ================================================================
+
 function LoadingDots() {
     return (
         <span
@@ -1921,6 +3225,10 @@ function LoadingDots() {
         </span>
     );
 }
+
+// ================================================================
+// CONFIDENCE RING
+// ================================================================
 
 function ConfidenceRing({
     value,
@@ -2000,6 +3308,10 @@ function ConfidenceRing({
     );
 }
 
+// ================================================================
+// CONFIDENCE BAR
+// ================================================================
+
 function ConfidenceBar({
     label,
     value,
@@ -2026,10 +3338,13 @@ function ConfidenceBar({
     const bars = {
         blue:
             "bg-[#1677D2]",
+
         red:
             "bg-[#E83F5B]",
+
         purple:
             "bg-[#7C4DDB]",
+
         green:
             "bg-[#16804C]",
     };
@@ -2064,6 +3379,10 @@ function ConfidenceBar({
     );
 }
 
+// ================================================================
+// ADDITIONAL READING
+// ================================================================
+
 function AdditionalReading({
     label,
     value,
@@ -2074,10 +3393,13 @@ function AdditionalReading({
     const accents = {
         purple:
             "text-[#7C4DDB] bg-[#F1E9FF]",
+
         green:
             "text-[#16804C] bg-[#E5F6EA]",
+
         amber:
             "text-[#E28A00] bg-[#FFF0D0]",
+
         blue:
             "text-[#1677D2] bg-[#E0EEFF]",
     };
@@ -2108,13 +3430,19 @@ function AdditionalReading({
     );
 }
 
+// ================================================================
+// PPG WAVEFORM
+// ================================================================
+
 function PPGWaveform({
     samples,
     beatPositions = [],
     sequence,
+    sampleRate = 25,
 }) {
     const width = 1000;
     const height = 320;
+
     const left = 55;
     const right = 18;
     const top = 18;
@@ -2136,19 +3464,29 @@ function PPGWaveform({
         return null;
     }
 
-    // The ESP32 values are real raw IR samples. For presentation we apply
-    // only a small display transform: light smoothing removes sample noise,
-    // then a linear baseline correction removes slow DC drift. This keeps
-    // the actual pulse shape while preventing the Spot waveform from
-    // becoming one large mountain.
+    /*
+     * The ESP32 values are real raw IR samples.
+     *
+     * For presentation we apply only a small display transform:
+     * light smoothing removes sample noise,
+     * then linear baseline correction removes slow DC drift.
+     *
+     * This does not change the ESP32 sensor processing.
+     */
+
     const smoothWindow = 9;
-    const smoothHalfWindow = Math.floor(
-        smoothWindow / 2
-    );
+
+    const smoothHalfWindow =
+        Math.floor(
+            smoothWindow / 2
+        );
 
     const smoothedSamples =
         numericSamples.map(
-            (sample, index) => {
+            (
+                sample,
+                index
+            ) => {
                 const start =
                     Math.max(
                         0,
@@ -2172,7 +3510,9 @@ function PPGWaveform({
                     i++
                 ) {
                     total +=
-                        numericSamples[i];
+                        numericSamples[
+                        i
+                        ];
                 }
 
                 return (
@@ -2187,14 +3527,19 @@ function PPGWaveform({
 
     const firstSample =
         smoothedSamples[0];
+
     const lastSample =
         smoothedSamples[
-        smoothedSamples.length - 1
+        smoothedSamples.length -
+        1
         ];
 
     const displaySamples =
         smoothedSamples.map(
-            (sample, index) => {
+            (
+                sample,
+                index
+            ) => {
                 const progress =
                     index /
                     Math.max(
@@ -2209,21 +3554,28 @@ function PPGWaveform({
                         firstSample) *
                     progress;
 
-                return sample - baseline;
+                return (
+                    sample -
+                    baseline
+                );
             }
         );
 
     const sortedDisplaySamples =
-        [...displaySamples].sort(
-            (a, b) => a - b
+        [
+            ...displaySamples,
+        ].sort(
+            (a, b) =>
+                a - b
         );
 
     const percentile = (
         values,
         ratio
     ) => {
-        if (!values.length)
+        if (!values.length) {
             return 0;
+        }
 
         const index =
             (values.length - 1) *
@@ -2231,17 +3583,25 @@ function PPGWaveform({
 
         const lower =
             Math.floor(index);
+
         const upper =
             Math.ceil(index);
 
-        if (lower === upper)
-            return values[lower];
+        if (
+            lower ===
+            upper
+        ) {
+            return values[
+                lower
+            ];
+        }
 
         return (
             values[lower] +
             (values[upper] -
                 values[lower]) *
-            (index - lower)
+            (index -
+                lower)
         );
     };
 
@@ -2318,7 +3678,9 @@ function PPGWaveform({
     const polylinePoints =
         points
             .map(
-                (point) =>
+                (
+                    point
+                ) =>
                     `${point.x.toFixed(
                         1
                     )},${point.y.toFixed(
@@ -2327,9 +3689,23 @@ function PPGWaveform({
             )
             .join(" ");
 
+    const safeSampleRate =
+        Number.isFinite(
+            Number(
+                sampleRate
+            )
+        ) &&
+            Number(
+                sampleRate
+            ) > 0
+            ? Number(
+                sampleRate
+            )
+            : 25;
+
     const sampleDuration =
         numericSamples.length /
-        100;
+        safeSampleRate;
 
     const validBeatPositions =
         Array.isArray(
@@ -2338,7 +3714,9 @@ function PPGWaveform({
             ? beatPositions
                 .map(Number)
                 .filter(
-                    (position) =>
+                    (
+                        position
+                    ) =>
                         Number.isInteger(
                             position
                         ) &&
@@ -2623,35 +4001,53 @@ function PPGWaveform({
     );
 }
 
+// ================================================================
+// SENSOR STATUS TITLE
+// ================================================================
+
 function getSensorStatusTitle(
     status
 ) {
     const titles = {
-        STARTING: "Starting",
+        STARTING:
+            "Starting",
+
         SENSOR_READY:
             "Sensors Ready",
+
         WAITING_FOR_FINGER:
             "Waiting for Finger",
+
         FINGER_DETECTED:
             "Finger Detected",
+
         STABILIZING:
             "Stabilizing",
+
         SIGNAL_STABLE:
             "Signal Stable",
+
         MEASURING:
             "Reading",
+
         READING_COMPLETE:
             "Reading Complete",
+
         FINGER_REMOVED:
             "Finger Removed",
+
         SESSION_COMPLETE:
             "Monitoring Complete",
+
         STOPPING:
             "Stopping",
+
         SESSION_STOPPED:
             "Monitoring Stopped",
+
         SENSOR_ERROR:
             "Sensor Error",
+
         COMMUNICATION_ERROR:
             "Communication Error",
     };
@@ -2661,6 +4057,10 @@ function getSensorStatusTitle(
         "Ready"
     );
 }
+
+// ================================================================
+// SIGNAL QUALITY
+// ================================================================
 
 function getSignalQualityMessage(
     quality

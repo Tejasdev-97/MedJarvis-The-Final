@@ -138,6 +138,22 @@ export const createVitalReading = async (req, res) => {
             mode: mode || session.mode,
             fallDetected: fallDetected === true,
             source: "ESP32",
+            recordedByProfile: req.user?.profileId || null,
+            recordedByRole: req.user?.role
+                ? req.user.role === "Doctor"
+                    ? "DOCTOR"
+                    : req.user.role === "Health Worker"
+                    ? "HEALTH_WORKER"
+                    : req.user.role === "Patient"
+                    ? "PATIENT"
+                    : "OTHER"
+                : "PATIENT",
+            measurementSource: "ESP32_BAND",
+            measurementContext: req.user?.role === "Doctor"
+                ? "CLINICAL_MONITORING"
+                : req.user?.role === "Health Worker"
+                ? "FIELD_VISIT"
+                : "SELF_MONITORING",
         });
 
         const io = req.app.get("io");
@@ -212,6 +228,92 @@ export const createVitalReading = async (req, res) => {
                 "newVital",
                 liveVital
             );
+
+            // ========================================================
+            // FALL ALERT — two paths can trigger this:
+            //
+            //  PATH 1 (Hardware-confirmed): ESP32 state machine completed
+            //          all 3 phases (impact → orientation change → stillness)
+            //          and sent fallDetected: true in the payload.
+            //
+            //  PATH 2 (Backend-side instant detection): accelMagnitude
+            //          crosses the same impact threshold (≥ 22 m/s²) that
+            //          the hardware uses as the entry to its fall state
+            //          machine. This fires immediately on ANY reading with
+            //          high acceleration — it works even in SPOT mode, even
+            //          if the user picks the sensor up before the 1800 ms
+            //          stillness window expires on the hardware.
+            //
+            //  A per-patient cooldown of 10 s prevents duplicate alerts.
+            // ========================================================
+
+            // Server-side cooldown map (module-level singleton)
+            if (!createVitalReading._fallCooldown) {
+                createVitalReading._fallCooldown = new Map();
+            }
+
+            const patientKey = String(patient._id);
+            const now = Date.now();
+            const lastAlert =
+                createVitalReading._fallCooldown.get(patientKey) || 0;
+            const FALL_COOLDOWN_MS = 10000; // 10 s
+            const onCooldown = now - lastAlert < FALL_COOLDOWN_MS;
+
+            // PATH 1 — hardware confirmed fall
+            const hardwareFall = fallDetected === true;
+
+            // PATH 2 — backend detects high-impact reading directly
+            // Threshold: 22 m/s² (≈ 2.24 g) — matches FALL_IMPACT_ACCEL_THRESHOLD
+            const BACKEND_FALL_ACCEL_THRESHOLD = 22.0;
+            const backendFall =
+                typeof accelMagnitude === "number" &&
+                isFinite(accelMagnitude) &&
+                accelMagnitude >= BACKEND_FALL_ACCEL_THRESHOLD;
+
+            const shouldEmitFall =
+                (hardwareFall || backendFall) && !onCooldown;
+
+            if (shouldEmitFall) {
+                createVitalReading._fallCooldown.set(patientKey, now);
+
+                const detectionPath = hardwareFall
+                    ? "hardware-confirmed"
+                    : "backend-accel-threshold";
+
+                io.to(
+                    `patient_${patient._id}`
+                ).emit("fallAlert", {
+                    patientId: patientKey,
+                    bandId: band.bandId,
+                    sessionId: session._id,
+                    accelMagnitude: accelMagnitude ?? null,
+                    gyroMagnitude: gyroMagnitude ?? null,
+                    tilt: tilt ?? null,
+                    spo2: spo2 ?? null,
+                    heartRate: heartRate ?? null,
+                    temperature: temperature ?? null,
+                    fallEventConfidence:
+                        req.body.fallEventConfidence ??
+                        (backendFall && !hardwareFall
+                            ? Math.min(
+                                  55 +
+                                      Math.round(
+                                          ((accelMagnitude - 22) / 58) * 40
+                                      ),
+                                  95
+                              )
+                            : null),
+                    detectedBy: detectionPath,
+                    timestamp: new Date().toISOString(),
+                });
+
+                console.log(
+                    `🚨 FALL ALERT [${detectionPath}] emitted to patient room: ${patientKey}` +
+                        (backendFall
+                            ? ` | accelMagnitude=${accelMagnitude?.toFixed(2)}`
+                            : "")
+                );
+            }
         }
 
         return res.status(201).json({

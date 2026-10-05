@@ -59,7 +59,7 @@ export default function ProfileSelectionPage() {
 
     return (
 
-        <div className="min-h-screen bg-[#FAF7F2] flex justify-center items-center px-4">
+        <div className="min-h-screen bg-[#FAF7F2] dark:bg-slate-950 flex justify-center items-center px-4 transition-colors duration-200">
 
             <Card className="max-w-xl w-full">
 
@@ -69,13 +69,13 @@ export default function ProfileSelectionPage() {
 
                     <div>
 
-                        <h2 className="text-3xl text-center font-serif">
+                        <h2 className="text-3xl text-center font-serif text-slate-900 dark:text-slate-100 font-bold">
 
                             Select Profile
 
                         </h2>
 
-                        <p className="text-center text-gray-500 mt-2">
+                        <p className="text-center text-slate-600 dark:text-slate-400 mt-2">
 
                             Choose the profile you want to continue with.
 

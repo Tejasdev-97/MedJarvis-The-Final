@@ -63,15 +63,15 @@ export default function GeminiSettings() {
 
     return (
 
-        <div className="bg-white rounded-2xl shadow p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border dark:border-slate-800 p-6">
 
-            <h2 className="text-2xl font-bold flex items-center gap-2">
+            <h2 className="text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-slate-100">
 
                 🤖 Gemini AI Configuration
 
             </h2>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-slate-600 dark:text-slate-400">
 
                 MedJarvis first checks for a backend Gemini API key.
                 If none is available, it automatically uses your
@@ -81,7 +81,7 @@ export default function GeminiSettings() {
 
             <div className="mt-6">
 
-                <label className="font-medium">
+                <label className="font-medium text-slate-700 dark:text-slate-300">
 
                     Gemini API Key
 
@@ -91,7 +91,7 @@ export default function GeminiSettings() {
 
                     type="password"
 
-                    className="border rounded-xl p-4 w-full mt-2"
+                    className="border border-[#E8E0D5] dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-xl p-4 w-full mt-2 outline-none focus:ring-2 focus:ring-[#2D6A4F]"
 
                     placeholder="Paste your Gemini API Key"
 
@@ -113,13 +113,13 @@ export default function GeminiSettings() {
 
                     disabled={!apiKey}
 
-                    className={`px-6 py-3 rounded-xl text-white transition ${
+                    className={`px-6 py-3 rounded-xl text-white font-bold transition ${
 
                         apiKey
 
-                            ? "bg-[#2D6A4F] hover:bg-[#245740]"
+                            ? "bg-[#2D6A4F] hover:bg-[#245740] dark:bg-emerald-600 dark:hover:bg-emerald-500"
 
-                            : "bg-gray-400 cursor-not-allowed"
+                            : "bg-gray-400 dark:bg-slate-700 cursor-not-allowed"
 
                     }`}
 
@@ -133,7 +133,7 @@ export default function GeminiSettings() {
 
                     onClick={removeKey}
 
-                    className="border px-6 py-3 rounded-xl hover:bg-gray-100"
+                    className="border border-[#E8E0D5] dark:border-slate-700 text-slate-800 dark:text-slate-200 px-6 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 font-bold transition"
 
                 >
 
@@ -151,13 +151,13 @@ export default function GeminiSettings() {
 
                         status.startsWith("✅")
 
-                            ? "bg-green-100 text-green-700 border border-green-300"
+                            ? "bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300 border border-green-300 dark:border-green-800"
 
                             : status.startsWith("Testing")
 
-                            ? "bg-blue-100 text-blue-700 border border-blue-300"
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-300 dark:border-blue-800"
 
-                            : "bg-red-100 text-red-700 border border-red-300"
+                            : "bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-300 dark:border-red-800"
 
                     }`}
 
@@ -169,15 +169,15 @@ export default function GeminiSettings() {
 
             )}
 
-            <div className="mt-6 rounded-xl bg-gray-50 border p-4">
+            <div className="mt-6 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-[#E8E0D5] dark:border-slate-700 p-4">
 
-                <h3 className="font-semibold">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">
 
                     Current AI Source
 
                 </h3>
 
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-slate-600 dark:text-slate-300">
 
                     {usingUserKey
                         ? "✅ Personal Gemini API Key"
@@ -195,7 +195,7 @@ export default function GeminiSettings() {
 
                 rel="noreferrer"
 
-                className="inline-block mt-6 text-blue-600 hover:underline font-medium"
+                className="inline-block mt-6 text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
 
             >
 

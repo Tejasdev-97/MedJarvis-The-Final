@@ -88,99 +88,99 @@ export default function CreatePatientModal({
 
     return (
 
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 
-            <div className="bg-white rounded-2xl p-6 w-full max-w-2xl">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-2xl p-6 w-full max-w-2xl shadow-xl transition-colors duration-200">
 
-                <h2 className="text-2xl font-bold mb-5">
+                <h2 className="text-2xl font-bold mb-5 text-slate-900 dark:text-slate-100">
 
                     Register Patient
 
                 </h2>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                     <input
                         name="firstName"
                         placeholder="First Name"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <input
                         name="lastName"
                         placeholder="Last Name"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <input
                         name="dateOfBirth"
                         type="date"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <select
-    name="gender"
-    value={form.gender}
-    onChange={change}
-    className="border rounded-lg p-3"
->
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Other</option>
+                        name="gender"
+                        value={form.gender}
+                        onChange={change}
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
+                    >
+                        <option value="Male" className="bg-white dark:bg-slate-800">Male</option>
+                        <option value="Female" className="bg-white dark:bg-slate-800">Female</option>
+                        <option value="Other" className="bg-white dark:bg-slate-800">Other</option>
                     </select>
 
                     <select
-    name="bloodGroup"
-    value={form.bloodGroup}
-    onChange={change}
-    className="border rounded-lg p-3"
->
-    <option value="A+">A+</option>
-    <option value="A-">A-</option>
-    <option value="B+">B+</option>
-    <option value="B-">B-</option>
-    <option value="AB+">AB+</option>
-    <option value="AB-">AB-</option>
-    <option value="O+">O+</option>
-    <option value="O-">O-</option>
-</select>
+                        name="bloodGroup"
+                        value={form.bloodGroup}
+                        onChange={change}
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
+                    >
+                        <option value="A+" className="bg-white dark:bg-slate-800">A+</option>
+                        <option value="A-" className="bg-white dark:bg-slate-800">A-</option>
+                        <option value="B+" className="bg-white dark:bg-slate-800">B+</option>
+                        <option value="B-" className="bg-white dark:bg-slate-800">B-</option>
+                        <option value="AB+" className="bg-white dark:bg-slate-800">AB+</option>
+                        <option value="AB-" className="bg-white dark:bg-slate-800">AB-</option>
+                        <option value="O+" className="bg-white dark:bg-slate-800">O+</option>
+                        <option value="O-" className="bg-white dark:bg-slate-800">O-</option>
+                    </select>
 
                     <input
                         name="phone"
                         placeholder="Phone"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <input
                         name="emergencyContact"
                         placeholder="Emergency Contact"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <input
                         name="village"
                         placeholder="Village"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <input
                         name="district"
                         placeholder="District"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                     <input
                         name="pincode"
                         placeholder="Pincode"
                         onChange={change}
-                        className="border rounded-lg p-3"
+                        className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                     />
 
                 </div>
@@ -190,7 +190,7 @@ export default function CreatePatientModal({
                     placeholder="Address"
                     rows="3"
                     onChange={change}
-                    className="border rounded-lg p-3 mt-4 w-full"
+                    className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg p-3 mt-4 w-full focus:ring-2 focus:ring-[#2D6A4F] outline-none"
                 />
 
                 <div className="flex justify-end gap-3 mt-6">
@@ -199,7 +199,7 @@ export default function CreatePatientModal({
 
                         onClick={onClose}
 
-                        className="px-5 py-2 border rounded-lg"
+                        className="px-5 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"
 
                     >
 
@@ -211,7 +211,7 @@ export default function CreatePatientModal({
 
                         onClick={savePatient}
 
-                        className="px-6 py-2 bg-[#2D6A4F] text-white rounded-lg"
+                        className="px-6 py-2 bg-[#2D6A4F] hover:bg-[#22533e] text-white rounded-lg transition font-medium shadow-sm"
 
                     >
 

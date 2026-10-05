@@ -13,15 +13,15 @@ export default function ProfileCard({
             onClick={() => onSelect(profile)}
             className="
                 w-full
-                bg-white
+                bg-white dark:bg-slate-900
                 border
-                border-[#E8E0D5]
+                border-[#E8E0D5] dark:border-slate-800
                 rounded-2xl
                 p-5
                 flex
                 items-center
                 justify-between
-                hover:border-[#2D6A4F]
+                hover:border-[#2D6A4F] dark:hover:border-emerald-500
                 hover:shadow-md
                 transition
             "
@@ -45,13 +45,13 @@ export default function ProfileCard({
 
                 <div className="text-left">
 
-                    <h3 className="font-semibold">
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">
 
                         {profile.displayName || "User"}
 
                     </h3>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">
                         {profile.role}
                     </p>
 
@@ -59,7 +59,7 @@ export default function ProfileCard({
 
             </div>
 
-            <ChevronRight className="text-[#2D6A4F]" />
+            <ChevronRight className="text-[#2D6A4F] dark:text-emerald-400" />
 
         </button>
 

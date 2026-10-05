@@ -84,24 +84,24 @@ export default function ComingSoonPage() {
 
     return (
 
-        <div className="bg-white rounded-2xl shadow-lg p-10">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-10 transition-colors duration-200">
 
             <div className="flex items-center gap-4 mb-8">
 
                 <Construction
                     size={55}
-                    className="text-[#2D6A4F]"
+                    className="text-[#2D6A4F] dark:text-emerald-400"
                 />
 
                 <div>
 
-                    <h1 className="text-3xl font-bold">
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
 
                         {module.title}
 
                     </h1>
 
-                    <p className="text-gray-500 mt-1">
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">
 
                         Planned MedJarvis Module
 
@@ -111,15 +111,15 @@ export default function ComingSoonPage() {
 
             </div>
 
-            <div className="bg-[#F8FAFC] rounded-xl p-6 border">
+            <div className="bg-[#F8FAFC] dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-800">
 
-                <h2 className="font-semibold text-lg mb-3">
+                <h2 className="font-semibold text-lg mb-3 text-slate-900 dark:text-slate-100">
 
                     Overview
 
                 </h2>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-slate-600 dark:text-slate-300 leading-7">
 
                     {module.description}
 
@@ -129,19 +129,19 @@ export default function ComingSoonPage() {
 
             <div className="grid md:grid-cols-3 gap-5 mt-8">
 
-                <div className="border rounded-xl p-5">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-slate-50/50 dark:bg-slate-800/30">
 
                     <Sparkles
-                        className="text-[#2D6A4F] mb-3"
+                        className="text-[#2D6A4F] dark:text-emerald-400 mb-3"
                     />
 
-                    <h3 className="font-semibold">
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">
 
                         Future Features
 
                     </h3>
 
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
 
                         Advanced AI, analytics, automation and intelligent workflows will be integrated.
 
@@ -149,19 +149,19 @@ export default function ComingSoonPage() {
 
                 </div>
 
-                <div className="border rounded-xl p-5">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-slate-50/50 dark:bg-slate-800/30">
 
                     <Clock3
-                        className="text-[#2D6A4F] mb-3"
+                        className="text-[#2D6A4F] dark:text-emerald-400 mb-3"
                     />
 
-                    <h3 className="font-semibold">
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">
 
                         Development Status
 
                     </h3>
 
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
 
                         UI planning completed. Module reserved for the next implementation phase.
 
@@ -169,19 +169,19 @@ export default function ComingSoonPage() {
 
                 </div>
 
-                <div className="border rounded-xl p-5">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-slate-50/50 dark:bg-slate-800/30">
 
                     <CheckCircle2
-                        className="text-[#2D6A4F] mb-3"
+                        className="text-[#2D6A4F] dark:text-emerald-400 mb-3"
                     />
 
-                    <h3 className="font-semibold">
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">
 
                         Project Vision
 
                     </h3>
 
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
 
                         Designed to integrate seamlessly with the complete MedJarvis ecosystem.
 

@@ -4,11 +4,13 @@ import {
     RefreshCw,
     Users,
     UserRound,
+    Upload,
 } from "lucide-react";
 
 import api from "../services/api";
 import CreateProfileModal from "../components/users/CreateProfileModal";
 import CreateAccountModal from "../components/users/CreateAccountModal";
+import BulkImportModal from "../components/bulk/BulkImportModal";
 
 export default function UsersPage() {
     const [profile, setProfile] = useState({});
@@ -19,6 +21,7 @@ export default function UsersPage() {
 
     const [open, setOpen] = useState(false);
     const [accountOpen, setAccountOpen] = useState(false);
+    const [bulkOpen, setBulkOpen] = useState(false);
 
     useEffect(() => {
         try {
@@ -113,7 +116,7 @@ export default function UsersPage() {
                             Manage Profiles
                         </h1>
 
-                        <p className="text-gray-500 mt-1">
+                        <p className="text-gray-500 dark:text-slate-400 mt-1">
                             Profiles linked to this account.
                         </p>
                     </div>
@@ -128,7 +131,7 @@ export default function UsersPage() {
                             loadProfiles(true)
                         }
                         disabled={refreshing}
-                        className="border border-[#2D6A4F] text-[#2D6A4F] px-4 py-3 rounded-xl flex items-center gap-2 disabled:opacity-60"
+                        className="border border-[#2D6A4F] text-[#2D6A4F] dark:border-emerald-500 dark:text-emerald-400 px-4 py-3 rounded-xl flex items-center gap-2 disabled:opacity-60"
                     >
                         <RefreshCw
                             size={18}
@@ -146,11 +149,12 @@ export default function UsersPage() {
                             <button
                                 type="button"
                                 onClick={() =>
-                                    setAccountOpen(true)
+                                    setBulkOpen(true)
                                 }
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl"
+                                className="border border-[#2D6A4F] bg-[#E5F6EA] text-[#164B45] hover:bg-[#D8F3DC] dark:bg-emerald-950 dark:border-emerald-700 dark:text-emerald-300 dark:hover:bg-emerald-900 px-5 py-3 rounded-xl flex gap-2 items-center font-bold transition"
                             >
-                                New Account
+                                <Upload size={18} />
+                                Staff Bulk Import
                             </button>
 
                             <button
@@ -158,7 +162,7 @@ export default function UsersPage() {
                                 onClick={() =>
                                     setOpen(true)
                                 }
-                                className="bg-[#2D6A4F] hover:bg-[#1B4332] text-white px-5 py-3 rounded-xl flex gap-2 items-center"
+                                className="bg-[#2D6A4F] hover:bg-[#1B4332] dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white px-5 py-3 rounded-xl flex gap-2 items-center font-bold"
                             >
                                 <Plus size={18} />
                                 Create Profile
@@ -171,11 +175,11 @@ export default function UsersPage() {
             </div>
 
             {/* ROLE INFO */}
-            <div className="bg-[#F7FAF8] border rounded-xl p-4">
+            <div className="bg-[#F7FAF8] dark:bg-slate-900 border dark:border-slate-800 rounded-xl p-4">
 
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-slate-300">
                     Signed in as{" "}
-                    <span className="font-semibold text-[#2D6A4F]">
+                    <span className="font-semibold text-[#2D6A4F] dark:text-emerald-400">
                         {role}
                     </span>
                 </p>
@@ -184,18 +188,18 @@ export default function UsersPage() {
 
             {/* PROFILE CARDS */}
             {profiles.length === 0 ? (
-                <div className="bg-white rounded-2xl border p-10 text-center">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border dark:border-slate-800 p-10 text-center">
 
                     <UserRound
                         size={42}
-                        className="mx-auto text-gray-400"
+                        className="mx-auto text-gray-400 dark:text-slate-500"
                     />
 
-                    <h2 className="text-xl font-semibold mt-4">
+                    <h2 className="text-xl font-semibold mt-4 text-slate-900 dark:text-slate-100">
                         No profiles found
                     </h2>
 
-                    <p className="text-gray-500 mt-2">
+                    <p className="text-gray-500 dark:text-slate-400 mt-2">
                         No linked profiles are currently available.
                     </p>
 
@@ -207,18 +211,18 @@ export default function UsersPage() {
 
                         <div
                             key={item._id}
-                            className="bg-white rounded-2xl shadow-sm border border-[#E8E0D5] p-5"
+                            className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-[#E8E0D5] dark:border-slate-800 p-5"
                         >
 
                             <div className="flex items-start justify-between gap-3">
 
                                 <div>
-                                    <h2 className="text-xl font-bold">
+                                    <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                                         {item.displayName ||
                                             "Unnamed Profile"}
                                     </h2>
 
-                                    <p className="text-[#2D6A4F] font-medium mt-1">
+                                    <p className="text-[#2D6A4F] dark:text-emerald-400 font-medium mt-1">
                                         {item.role ||
                                             "Unknown Role"}
                                     </p>
@@ -226,7 +230,7 @@ export default function UsersPage() {
 
                                 <UserRound
                                     size={22}
-                                    className="text-gray-400"
+                                    className="text-gray-400 dark:text-slate-500"
                                 />
 
                             </div>
@@ -234,20 +238,20 @@ export default function UsersPage() {
                             <div className="mt-5 space-y-2 text-sm">
 
                                 <p>
-                                    <span className="text-gray-500">
+                                    <span className="text-gray-500 dark:text-slate-400">
                                         Employee ID:
                                     </span>{" "}
-                                    <span className="font-medium">
+                                    <span className="font-medium text-slate-800 dark:text-slate-200">
                                         {item.employeeId ||
                                             "—"}
                                     </span>
                                 </p>
 
                                 <p>
-                                    <span className="text-gray-500">
+                                    <span className="text-gray-500 dark:text-slate-400">
                                         Hospital:
                                     </span>{" "}
-                                    <span className="font-medium">
+                                    <span className="font-medium text-slate-800 dark:text-slate-200">
                                         {item.hospital ||
                                             "—"}
                                     </span>
@@ -278,10 +282,20 @@ export default function UsersPage() {
                             setOpen(false)
                         }
                         accountId={profile.account}
+                        profileRole={role}
                         onSuccess={() => {
                             setOpen(false);
                             loadProfiles();
                         }}
+                    />
+
+                    <BulkImportModal
+                        open={bulkOpen}
+                        onClose={() => setBulkOpen(false)}
+                        onSuccess={() => {
+                            loadProfiles();
+                        }}
+                        defaultEntity="Health Workers"
                     />
                 </>
             )}

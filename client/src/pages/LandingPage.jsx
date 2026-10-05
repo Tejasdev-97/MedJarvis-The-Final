@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Navbar from "../components/landing/Navbar";
@@ -10,13 +9,12 @@ import CTASection from "../components/landing/CTASection";
 import FooterSection from "../components/landing/FooterSection";
 import FloatingAI from "../components/landing/FloatingAI";
 import BackToTop from "../components/landing/BackToTop";
+import { useTheme } from "../context/ThemeContext";
 
 export default function LandingPage() {
     const navigate = useNavigate();
-
-    const [darkMode, setDarkMode] = useState(false);
-
-    const [language, setLanguage] = useState("English");
+    const { isDark } = useTheme();
+    const darkMode = isDark;
 
     return (
         <div
@@ -27,17 +25,12 @@ export default function LandingPage() {
                 duration-300
                 ${
                     darkMode
-                        ? "bg-[#0F172A]"
-                        : "bg-gradient-to-b from-[#F8FFFB] via-white to-[#F3FFF8]"
+                        ? "bg-[#0F172A] text-slate-100"
+                        : "bg-gradient-to-b from-[#F8FFFB] via-white to-[#F3FFF8] text-gray-900"
                 }
             `}
         >
-            <Navbar
-                darkMode={darkMode}
-                setDarkMode={setDarkMode}
-                language={language}
-                setLanguage={setLanguage}
-            />
+            <Navbar />
 
             <HeroSection
                 darkMode={darkMode}

@@ -172,7 +172,9 @@ export default function AIHealthSummaryPage() {
                         py-1.5
                         rounded-full
                         bg-[#D8F3DC]
+                        dark:bg-emerald-950
                         text-[#1B4332]
+                        dark:text-emerald-300
                         text-sm
                         font-bold
                         mb-3
@@ -192,6 +194,7 @@ export default function AIHealthSummaryPage() {
                         sm:text-4xl
                         font-bold
                         text-[#1B4332]
+                        dark:text-emerald-400
                     "
                 >
                     AI Health Summary
@@ -201,7 +204,8 @@ export default function AIHealthSummaryPage() {
                 <p
                     className="
                         mt-2
-                        text-[#1A1A1A]
+                        text-slate-700
+                        dark:text-slate-300
                         font-medium
                         text-base
                         sm:text-lg
@@ -221,7 +225,9 @@ export default function AIHealthSummaryPage() {
                     rounded-2xl
                     border
                     border-[#E8E0D5]
+                    dark:border-emerald-900/50
                     bg-[#FFF8F1]
+                    dark:bg-emerald-950/20
                     p-5
                     flex
                     gap-3
@@ -232,13 +238,15 @@ export default function AIHealthSummaryPage() {
                     size={23}
                     className="
                         text-[#2D6A4F]
+                        dark:text-emerald-400
                         shrink-0
                     "
                 />
 
                 <p
                     className="
-                        text-[#1A1A1A]
+                        text-slate-800
+                        dark:text-slate-200
                         font-medium
                         leading-6
                     "
@@ -260,11 +268,14 @@ export default function AIHealthSummaryPage() {
                         rounded-2xl
                         border
                         border-red-200
+                        dark:border-red-900
                         bg-red-50
+                        dark:bg-red-950/50
                         p-5
                         flex
                         gap-3
                         text-red-700
+                        dark:text-red-300
                     "
                 >
 
@@ -275,7 +286,8 @@ export default function AIHealthSummaryPage() {
 
                     <p
                         className="
-                            text-[#1A1A1A]
+                            text-slate-800
+                            dark:text-slate-200
                             font-medium
                         "
                     >
@@ -292,8 +304,10 @@ export default function AIHealthSummaryPage() {
             <div
                 className="
                     bg-white
+                    dark:bg-slate-900
                     border
                     border-[#E8E0D5]
+                    dark:border-slate-800
                     rounded-3xl
                     shadow-sm
                     p-6
@@ -319,7 +333,8 @@ export default function AIHealthSummaryPage() {
                                 text-xl
                                 sm:text-2xl
                                 font-bold
-                                text-[#1A1A1A]
+                                text-slate-900
+                                dark:text-slate-100
                             "
                         >
                             Patient Health Overview
@@ -328,7 +343,8 @@ export default function AIHealthSummaryPage() {
                         <p
                             className="
                                 mt-1
-                                text-[#4A4A4A]
+                                text-slate-600
+                                dark:text-slate-400
                                 font-medium
                             "
                         >
@@ -342,7 +358,8 @@ export default function AIHealthSummaryPage() {
                                 className="
                                     mt-2
                                     text-xs
-                                    text-[#4A4A4A]
+                                    text-slate-500
+                                    dark:text-slate-400
                                 "
                             >
                                 Last generated: {generatedAt}
@@ -375,6 +392,8 @@ export default function AIHealthSummaryPage() {
                                 rounded-xl
                                 bg-[#2D6A4F]
                                 hover:bg-[#1B4332]
+                                dark:bg-emerald-600
+                                dark:hover:bg-emerald-500
                                 text-white
                                 font-bold
                                 disabled:opacity-50
@@ -441,10 +460,13 @@ export default function AIHealthSummaryPage() {
                                 rounded-2xl
                                 border
                                 border-[#E8E0D5]
+                                dark:border-slate-700
                                 bg-[#FAF7F2]
+                                dark:bg-slate-800/80
                                 p-6
                                 sm:p-8
-                                text-[#1A1A1A]
+                                text-slate-900
+                                dark:text-slate-100
                             "
                         >
 
@@ -457,6 +479,8 @@ export default function AIHealthSummaryPage() {
                                                 text-2xl
                                                 font-bold
                                                 mb-5
+                                                text-slate-900
+                                                dark:text-slate-100
                                             "
                                         >
                                             {children}
@@ -471,6 +495,7 @@ export default function AIHealthSummaryPage() {
                                                 mt-7
                                                 mb-3
                                                 text-[#1B4332]
+                                                dark:text-emerald-400
                                             "
                                         >
                                             {children}
@@ -484,6 +509,8 @@ export default function AIHealthSummaryPage() {
                                                 font-bold
                                                 mt-5
                                                 mb-2
+                                                text-slate-900
+                                                dark:text-slate-100
                                             "
                                         >
                                             {children}
@@ -496,6 +523,8 @@ export default function AIHealthSummaryPage() {
                                                 leading-7
                                                 mb-4
                                                 font-medium
+                                                text-slate-800
+                                                dark:text-slate-200
                                             "
                                         >
                                             {children}
@@ -509,6 +538,8 @@ export default function AIHealthSummaryPage() {
                                                 ml-6
                                                 mb-4
                                                 space-y-2
+                                                text-slate-800
+                                                dark:text-slate-200
                                             "
                                         >
                                             {children}
@@ -523,7 +554,7 @@ export default function AIHealthSummaryPage() {
 
                                     strong: ({ children }) => (
                                         <strong
-                                            className="font-bold"
+                                            className="font-bold text-slate-900 dark:text-slate-100"
                                         >
                                             {children}
                                         </strong>
@@ -544,7 +575,9 @@ export default function AIHealthSummaryPage() {
                                 border
                                 border-dashed
                                 border-[#E8E0D5]
+                                dark:border-slate-800
                                 bg-[#FAF7F2]
+                                dark:bg-slate-800/40
                                 p-10
                                 text-center
                             "
@@ -555,6 +588,7 @@ export default function AIHealthSummaryPage() {
                                 className="
                                     mx-auto
                                     text-[#2D6A4F]
+                                    dark:text-emerald-400
                                 "
                             />
 
@@ -563,7 +597,8 @@ export default function AIHealthSummaryPage() {
                                     mt-4
                                     text-xl
                                     font-bold
-                                    text-[#1A1A1A]
+                                    text-slate-900
+                                    dark:text-slate-100
                                 "
                             >
                                 No AI Summary Generated
@@ -572,7 +607,8 @@ export default function AIHealthSummaryPage() {
                             <p
                                 className="
                                     mt-2
-                                    text-[#4A4A4A]
+                                    text-slate-600
+                                    dark:text-slate-400
                                     font-medium
                                 "
                             >

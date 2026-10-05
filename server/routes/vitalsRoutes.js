@@ -14,6 +14,7 @@ import {
 } from "../controllers/vitalsController.js";
 
 import protect from "../middleware/authMiddleware.js";
+import requirePatientAccess from "../middleware/requirePatientAccess.js";
 
 const router = express.Router();
 
@@ -65,12 +66,14 @@ router.post(
 router.get(
     "/latest/:patientId",
     protect,
+    requirePatientAccess({ scope: "VITALS" }),
     getLatestVital
 );
 
 router.get(
     "/patient/:patientId",
     protect,
+    requirePatientAccess({ scope: "VITALS" }),
     getPatientVitals
 );
 

@@ -14,6 +14,7 @@ import DashboardPage from "../pages/DashboardPage";
 import ProfileSelectionPage from "../pages/ProfileSelectionPage";
 import HealthCardPage from "../pages/HealthCardPage";
 import PatientsPage from "../pages/PatientsPage";
+import MyPatientsPage from "../pages/MyPatientsPage";
 import ScanPatientPage from "../pages/ScanPatientPage";
 import SettingsPage from "../pages/SettingsPage";
 import PatientSummaryPage from "../pages/PatientSummaryPage";
@@ -21,6 +22,7 @@ import MedicalHistoryPage from "../pages/MedicalHistoryPage";
 import PrescriptionsPage from "../pages/PrescriptionsPage";
 import AIHealthSummaryPage from "../pages/AIHealthSummaryPage";
 import EmergencyPage from "../pages/EmergencyPage";
+import PrivacyCenterPage from "../pages/PrivacyCenterPage";
 
 import ComingSoonPage from "../pages/ComingSoonPage";
 import UsersPage from "../pages/UsersPage";
@@ -28,40 +30,19 @@ import RegisterPatientPage from "../pages/RegisterPatientPage";
 import AddPrescriptionPage from "../pages/AddPrescriptionPage";
 
 import ProtectedRoute from "./ProtectedRoute";
-
+import DoctorVisitPage from "../pages/DoctorVisitPage";
+import MonitoringPage from "../pages/MonitoringPage";
 
 export default function AppRouter() {
-
     return (
-
         <BrowserRouter>
-
             <Routes>
+                {/* PUBLIC */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/profiles" element={<ProfileSelectionPage />} />
 
-                {/* =====================================================
-                    PUBLIC
-                ====================================================== */}
-
-                <Route
-                    path="/"
-                    element={<LandingPage />}
-                />
-
-                <Route
-                    path="/login"
-                    element={<LoginPage />}
-                />
-
-                <Route
-                    path="/profiles"
-                    element={<ProfileSelectionPage />}
-                />
-
-
-                {/* =====================================================
-                    PROTECTED APPLICATION
-                ====================================================== */}
-
+                {/* PROTECTED APPLICATION */}
                 <Route
                     element={
                         <ProtectedRoute>
@@ -69,85 +50,27 @@ export default function AppRouter() {
                         </ProtectedRoute>
                     }
                 >
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/patients" element={<MyPatientsPage />} />
+                    <Route path="/all-patients" element={<PatientsPage />} />
+                    <Route path="/register-patient" element={<RegisterPatientPage />} />
+                    <Route path="/scan-patient" element={<ScanPatientPage />} />
+                    <Route path="/patient-summary/:patientId" element={<PatientSummaryPage />} />
+                    <Route path="/add-prescription/:patientId" element={<AddPrescriptionPage />} />
 
-                    {/* =================================================
-                        DASHBOARD
-                    ================================================== */}
+                    <Route path="/visits" element={<DoctorVisitPage />} />
+                    <Route path="/visits/:patientId" element={<DoctorVisitPage />} />
 
-                    <Route
-                        path="/dashboard"
-                        element={<DashboardPage />}
-                    />
+                    <Route path="/medical-history" element={<MedicalHistoryPage />} />
+                    <Route path="/prescriptions" element={<PrescriptionsPage />} />
+                    <Route path="/external-records" element={<ComingSoonPage />} />
 
+                    <Route path="/health-card" element={<HealthCardPage />} />
+                    <Route path="/health-card/:patientId" element={<HealthCardPage />} />
 
-                    {/* =================================================
-                        PATIENT MANAGEMENT
-                    ================================================== */}
-
-                    <Route
-                        path="/patients"
-                        element={<PatientsPage />}
-                    />
-
-                    <Route
-                        path="/register-patient"
-                        element={<RegisterPatientPage />}
-                    />
-
-                    <Route
-                        path="/scan-patient"
-                        element={<ScanPatientPage />}
-                    />
-
-                    <Route
-                        path="/patient-summary/:patientId"
-                        element={<PatientSummaryPage />}
-                    />
-
-                    <Route
-                        path="/add-prescription/:patientId"
-                        element={<AddPrescriptionPage />}
-                    />
-
-
-                    {/* =================================================
-                        MEDICAL RECORDS
-                    ================================================== */}
-
-                    <Route
-                        path="/medical-history"
-                        element={<MedicalHistoryPage />}
-                    />
-
-                    <Route
-                        path="/prescriptions"
-                        element={<PrescriptionsPage />}
-                    />
-
-
-                    {/* =================================================
-                        HEALTH CARD
-                    ================================================== */}
-
-                    <Route
-                        path="/health-card"
-                        element={<HealthCardPage />}
-                    />
-
-                    <Route
-                        path="/health-card/:patientId"
-                        element={<HealthCardPage />}
-                    />
-
-
-                    {/* =================================================
-                        VITALS
-                    ================================================== */}
-
-                    <Route
-                        path="/vitals"
-                        element={<MyHealthPage />}
-                    />
+                    <Route path="/vitals" element={<MyHealthPage />} />
+                    <Route path="/my-health" element={<MyHealthPage />} />
+                    <Route path="/monitoring" element={<MonitoringPage />} />
 
 
                     {/* =================================================
@@ -167,6 +90,16 @@ export default function AppRouter() {
                     <Route
                         path="/emergency"
                         element={<EmergencyPage />}
+                    />
+
+
+                    {/* =================================================
+                        PRIVACY CENTER  (patient-facing)
+                    ================================================== */}
+
+                    <Route
+                        path="/privacy"
+                        element={<PrivacyCenterPage />}
                     />
 
 

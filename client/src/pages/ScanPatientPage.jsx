@@ -121,19 +121,19 @@ export default function ScanPatientPage() {
 
                 <div className="flex items-center gap-3">
 
-                    <div className="w-12 h-12 rounded-xl bg-[#D8F3DC] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#D8F3DC] dark:bg-emerald-950 flex items-center justify-center">
                         <UserSearch
                             size={25}
-                            className="text-[#2D6A4F]"
+                            className="text-[#2D6A4F] dark:text-emerald-400"
                         />
                     </div>
 
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-[#2D6A4F]">
+                        <h1 className="text-3xl md:text-4xl font-bold text-[#2D6A4F] dark:text-emerald-400">
                             Scan Patient
                         </h1>
 
-                        <p className="text-gray-500 mt-1">
+                        <p className="text-gray-500 dark:text-slate-400 mt-1">
                             Search or scan a MedJarvis patient.
                         </p>
                     </div>
@@ -147,21 +147,21 @@ export default function ScanPatientPage() {
                 {/* SEARCH BY ID */}
                 <div className="lg:col-span-1">
 
-                    <div className="bg-white rounded-3xl shadow-lg border border-[#E8E0D5] p-6 h-full">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-[#E8E0D5] dark:border-slate-800 p-6 h-full text-slate-900 dark:text-slate-100">
 
                         <div className="flex items-center gap-3 mb-5">
 
                             <Search
-                                className="text-[#2D6A4F]"
+                                className="text-[#2D6A4F] dark:text-emerald-400"
                                 size={28}
                             />
 
                             <div>
-                                <h2 className="font-bold text-xl">
+                                <h2 className="font-bold text-xl text-slate-900 dark:text-slate-100">
                                     Search by ID
                                 </h2>
 
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-gray-500 dark:text-slate-400">
                                     Search using MedJarvis ID
                                 </p>
                             </div>
@@ -169,7 +169,7 @@ export default function ScanPatientPage() {
                         </div>
 
                         <input
-                            className="w-full rounded-xl border border-[#E8E0D5] p-4 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
+                            className="w-full rounded-xl border border-[#E8E0D5] dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-4 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
                             placeholder="MJ-KA-DWD-2026-000001"
                             value={medJarvisId}
                             onChange={(e) =>
@@ -190,7 +190,7 @@ export default function ScanPatientPage() {
                             type="button"
                             onClick={searchPatient}
                             disabled={loading}
-                            className="mt-5 w-full rounded-xl bg-[#2D6A4F] hover:bg-[#245540] text-white py-4 flex justify-center items-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="mt-5 w-full rounded-xl bg-[#2D6A4F] hover:bg-[#245540] dark:bg-emerald-600 dark:hover:bg-emerald-500 font-bold text-white py-4 flex justify-center items-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <>
@@ -216,23 +216,23 @@ export default function ScanPatientPage() {
                 <div className="lg:col-span-2 space-y-8">
 
                     {/* CAMERA */}
-                    <div className="bg-white rounded-3xl shadow-lg border border-[#E8E0D5] p-6">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-[#E8E0D5] dark:border-slate-800 p-6 text-slate-900 dark:text-slate-100">
 
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
                             <div className="flex gap-3 items-center">
 
                                 <Camera
-                                    className="text-[#2D6A4F] shrink-0"
+                                    className="text-[#2D6A4F] dark:text-emerald-400 shrink-0"
                                     size={30}
                                 />
 
                                 <div>
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-xl text-slate-900 dark:text-slate-100">
                                         Scan QR using Camera
                                     </h2>
 
-                                    <p className="text-gray-500 text-sm">
+                                    <p className="text-gray-500 dark:text-slate-400 text-sm">
                                         Point the camera towards the patient's QR Code.
                                     </p>
                                 </div>
@@ -246,7 +246,7 @@ export default function ScanPatientPage() {
                                         !cameraOpen
                                     )
                                 }
-                                className="bg-[#2D6A4F] hover:bg-[#245540] text-white px-5 py-3 rounded-xl whitespace-nowrap transition"
+                                className="bg-[#2D6A4F] hover:bg-[#245540] dark:bg-emerald-600 dark:hover:bg-emerald-500 font-bold text-white px-5 py-3 rounded-xl whitespace-nowrap transition"
                             >
                                 {cameraOpen
                                     ? "Close Camera"
@@ -275,23 +275,23 @@ export default function ScanPatientPage() {
                     </div>
 
                     {/* IMAGE */}
-                    <div className="bg-white rounded-3xl shadow-lg border border-[#E8E0D5] p-6">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-[#E8E0D5] dark:border-slate-800 p-6 text-slate-900 dark:text-slate-100">
 
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
                             <div className="flex gap-3 items-center">
 
                                 <Upload
-                                    className="text-[#2D6A4F] shrink-0"
+                                    className="text-[#2D6A4F] dark:text-emerald-400 shrink-0"
                                     size={30}
                                 />
 
                                 <div>
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-xl text-slate-900 dark:text-slate-100">
                                         Upload QR Image
                                     </h2>
 
-                                    <p className="text-gray-500 text-sm">
+                                    <p className="text-gray-500 dark:text-slate-400 text-sm">
                                         PNG / JPG / JPEG
                                     </p>
                                 </div>
@@ -305,7 +305,7 @@ export default function ScanPatientPage() {
                                         !uploadOpen
                                     )
                                 }
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl whitespace-nowrap transition"
+                                className="bg-blue-600 hover:bg-blue-700 font-bold text-white px-5 py-3 rounded-xl whitespace-nowrap transition"
                             >
                                 {uploadOpen
                                     ? "Hide"
@@ -333,21 +333,21 @@ export default function ScanPatientPage() {
             </div>
 
             {/* SUPPORTED METHODS */}
-            <div className="mt-10 bg-[#F7FAF8] border border-[#E8E0D5] rounded-3xl p-6">
+            <div className="mt-10 bg-[#F7FAF8] dark:bg-slate-900 border border-[#E8E0D5] dark:border-slate-800 rounded-3xl p-6 text-slate-900 dark:text-slate-100">
 
                 <div className="flex gap-3 items-center">
 
                     <ScanLine
-                        className="text-[#2D6A4F]"
+                        className="text-[#2D6A4F] dark:text-emerald-400"
                         size={28}
                     />
 
                     <div>
-                        <h2 className="font-bold text-xl">
+                        <h2 className="font-bold text-xl text-slate-900 dark:text-slate-100">
                             Supported Lookup Methods
                         </h2>
 
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 dark:text-slate-400">
                             Multiple ways to quickly locate a patient.
                         </p>
                     </div>
@@ -356,32 +356,32 @@ export default function ScanPatientPage() {
 
                 <div className="grid md:grid-cols-3 gap-5 mt-6">
 
-                    <div className="bg-white rounded-2xl p-5 border border-[#E8E0D5]">
-                        <h3 className="font-semibold">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#E8E0D5] dark:border-slate-700">
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                             Search by ID
                         </h3>
 
-                        <p className="text-sm text-gray-500 mt-2">
+                        <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
                             Enter the MedJarvis ID manually.
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-5 border border-[#E8E0D5]">
-                        <h3 className="font-semibold">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#E8E0D5] dark:border-slate-700">
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                             Camera Scan
                         </h3>
 
-                        <p className="text-sm text-gray-500 mt-2">
+                        <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
                             Scan QR directly using your webcam.
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-5 border border-[#E8E0D5]">
-                        <h3 className="font-semibold">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#E8E0D5] dark:border-slate-700">
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                             Upload QR
                         </h3>
 
-                        <p className="text-sm text-gray-500 mt-2">
+                        <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
                             Decode a QR image from your computer.
                         </p>
                     </div>

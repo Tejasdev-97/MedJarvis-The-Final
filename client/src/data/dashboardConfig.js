@@ -50,19 +50,14 @@ export const dashboardConfig = {
 
         actions: [
             {
-                title: "Manage Users",
+                title: "Manage Profiles",
                 icon: Users,
                 path: "/users",
             },
             {
-                title: "Patients",
-                icon: HeartPulse,
-                path: "/patients",
-            },
-            {
-                title: "Scan Patient",
-                icon: ScanLine,
-                path: "/scan-patient",
+                title: "Hospitals",
+                icon: Building2,
+                path: "/hospitals",
             },
             {
                 title: "Settings",

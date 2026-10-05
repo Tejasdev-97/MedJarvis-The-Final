@@ -162,9 +162,47 @@ const vitalReadingSchema = new mongoose.Schema(
         // SOURCE
         // ============================================================
 
-        source: {
+        // ============================================================
+        // PROVENANCE & RECORDING CONTEXT METADATA
+        // ============================================================
+
+        recordedByProfile: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Profile",
+            default: null,
+        },
+
+        recordedByRole: {
             type: String,
-            default: "ESP32",
+            default: "",
+        },
+
+        hospital: {
+            type: String,
+            default: "",
+        },
+
+        measurementSource: {
+            type: String,
+            default: "ESP32_BAND",
+        },
+
+        measurementContext: {
+            type: String,
+            enum: [
+                "SELF_MONITORING",
+                "CLINICAL_MONITORING",
+                "FIELD_VISIT",
+                "EMERGENCY",
+                "",
+            ],
+            default: "SELF_MONITORING",
+        },
+
+        accessGrant: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "AccessGrant",
+            default: null,
         },
     },
     {

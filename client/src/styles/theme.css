@@ -1,59 +1,58 @@
 /* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
 
-:root{
-
-    --bg:#FAF7F2;
-    --bg-secondary:#F2EDE4;
-
-    --card:#FFFFFF;
-
-    --primary:#2D6A4F;
-    --primary-hover:#1B4332;
-
-    --primary-light:#D8F3DC;
-
-    --accent:#E76F51;
-
-    --gold:#F4A261;
-
-    --text:#1A1A1A;
-
-    --text-secondary:#4A4A4A;
-
-    --border:#E8E0D5;
-
-    --danger:#C0392B;
-
-    --success:#059669;
-
-    --radius:20px;
-
-    --shadow:
-        0 8px 30px rgba(45,106,79,.08);
-
+:root {
+    --bg: #FAF7F2;
+    --bg-secondary: #F2EDE4;
+    --card: #FFFFFF;
+    --primary: #2D6A4F;
+    --primary-hover: #1B4332;
+    --primary-light: #D8F3DC;
+    --accent: #E76F51;
+    --gold: #F4A261;
+    --text: #0F172A;
+    --text-secondary: #475569;
+    --border: #E8E0D5;
+    --danger: #C0392B;
+    --success: #059669;
+    --radius: 20px;
+    --shadow: 0 8px 30px rgba(45,106,79,.08);
 }
 
-body{
-
-    margin:0;
-
-    background:var(--bg);
-
-    color:var(--text);
-
-    font-family:'Inter',sans-serif;
-
+.dark {
+    --bg: #090D16;
+    --bg-secondary: #0F172A;
+    --card: #1E293B;
+    --primary: #2D6A4F;
+    --primary-hover: #40916C;
+    --primary-light: #164B45;
+    --accent: #E76F51;
+    --gold: #F4A261;
+    --text: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --border: #334155;
+    --danger: #EF4444;
+    --success: #10B981;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
-h1,h2,h3{
-
-    font-family:'DM Serif Display',serif;
-
+body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-*{
-
-    box-sizing:border-box;
-
+body.dark {
+    background-color: #090D16;
+    color: #F8FAFC;
 }
+
+h1, h2, h3 {
+    font-family: 'DM Serif Display', serif;
+}
+
+* {
+    box-sizing: border-box;
+}

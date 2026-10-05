@@ -82,19 +82,19 @@ export default function RegisterPatientPage() {
 
             <div className="mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-[#D8F3DC] flex items-center justify-center">
+                    <div className="w-11 h-11 rounded-xl bg-[#D8F3DC] dark:bg-emerald-950 flex items-center justify-center">
                         <UserPlus
                             size={22}
-                            className="text-[#2D6A4F]"
+                            className="text-[#2D6A4F] dark:text-emerald-400"
                         />
                     </div>
 
                     <div>
-                        <h1 className="text-3xl font-bold">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
                             Register Patient
                         </h1>
 
-                        <p className="text-[#4A4A4A] mt-1">
+                        <p className="text-[#4A4A4A] dark:text-slate-400 mt-1">
                             Create a new MedJarvis patient profile.
                         </p>
                     </div>
@@ -102,13 +102,13 @@ export default function RegisterPatientPage() {
             </div>
 
             {error && (
-                <div className="mb-5 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3">
+                <div className="mb-5 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 rounded-xl px-4 py-3">
                     {error}
                 </div>
             )}
 
             {success && (
-                <div className="mb-5 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 flex items-start gap-3">
+                <div className="mb-5 bg-green-50 dark:bg-green-950/50 border border-green-200 dark:border-green-900 text-green-700 dark:text-green-300 rounded-xl px-4 py-3 flex items-start gap-3">
                     <CheckCircle
                         size={20}
                         className="mt-0.5 shrink-0"
@@ -119,7 +119,7 @@ export default function RegisterPatientPage() {
 
             <form
                 onSubmit={registerPatient}
-                className="bg-white rounded-2xl shadow-sm border border-[#E8E0D5] p-6 md:p-8"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-[#E8E0D5] dark:border-slate-800 p-6 md:p-8 text-slate-900 dark:text-slate-100"
             >
 
                 <div className="grid md:grid-cols-2 gap-5">
@@ -208,7 +208,7 @@ export default function RegisterPatientPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-[#2D6A4F] hover:bg-[#1B4332] text-white px-7 py-3 rounded-xl flex items-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="bg-[#2D6A4F] hover:bg-[#1B4332] dark:bg-emerald-600 dark:hover:bg-emerald-500 font-bold text-white px-7 py-3 rounded-xl flex items-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <>

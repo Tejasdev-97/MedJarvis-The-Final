@@ -127,13 +127,15 @@ export default function PrescriptionsPage() {
                             mx-auto
                             animate-spin
                             text-[#2D6A4F]
+                            dark:text-emerald-400
                         "
                     />
 
                     <p
                         className="
                             mt-4
-                            text-[#1A1A1A]
+                            text-slate-900
+                            dark:text-slate-100
                             font-bold
                         "
                     >
@@ -181,7 +183,9 @@ export default function PrescriptionsPage() {
                             py-1.5
                             rounded-full
                             bg-[#D8F3DC]
+                            dark:bg-emerald-950
                             text-[#1B4332]
+                            dark:text-emerald-300
                             text-sm
                             font-bold
                             mb-3
@@ -200,6 +204,7 @@ export default function PrescriptionsPage() {
                             sm:text-4xl
                             font-bold
                             text-[#1B4332]
+                            dark:text-emerald-400
                         "
                     >
                         Prescriptions
@@ -208,7 +213,8 @@ export default function PrescriptionsPage() {
                     <p
                         className="
                             mt-2
-                            text-[#1A1A1A]
+                            text-slate-700
+                            dark:text-slate-300
                             font-medium
                         "
                     >
@@ -230,10 +236,14 @@ export default function PrescriptionsPage() {
                         rounded-xl
                         border
                         border-[#E8E0D5]
+                        dark:border-slate-700
                         bg-white
-                        text-[#1A1A1A]
+                        dark:bg-slate-800
+                        text-slate-900
+                        dark:text-slate-100
                         font-bold
                         hover:bg-[#FAF7F2]
+                        dark:hover:bg-slate-700
                         transition
                     "
                 >
@@ -256,7 +266,9 @@ export default function PrescriptionsPage() {
                         rounded-2xl
                         border
                         border-red-200
+                        dark:border-red-900
                         bg-red-50
+                        dark:bg-red-950/50
                         p-5
                     "
                 >
@@ -267,6 +279,7 @@ export default function PrescriptionsPage() {
                             gap-3
                             items-start
                             text-red-700
+                            dark:text-red-300
                         "
                     >
 
@@ -284,7 +297,8 @@ export default function PrescriptionsPage() {
                             <p
                                 className="
                                     mt-1
-                                    text-[#1A1A1A]
+                                    text-slate-800
+                                    dark:text-slate-200
                                     font-medium
                                 "
                             >
@@ -307,8 +321,10 @@ export default function PrescriptionsPage() {
                 <div
                     className="
                         bg-white
+                        dark:bg-slate-900
                         border
                         border-[#E8E0D5]
+                        dark:border-slate-800
                         rounded-3xl
                         shadow-sm
                         p-10
@@ -323,6 +339,7 @@ export default function PrescriptionsPage() {
                             mx-auto
                             rounded-2xl
                             bg-[#D8F3DC]
+                            dark:bg-emerald-950
                             flex
                             items-center
                             justify-center
@@ -331,7 +348,7 @@ export default function PrescriptionsPage() {
 
                         <FileText
                             size={30}
-                            className="text-[#2D6A4F]"
+                            className="text-[#2D6A4F] dark:text-emerald-400"
                         />
 
                     </div>
@@ -341,7 +358,8 @@ export default function PrescriptionsPage() {
                             mt-5
                             text-2xl
                             font-bold
-                            text-[#1A1A1A]
+                            text-slate-900
+                            dark:text-slate-100
                         "
                     >
                         No Prescription Recorded
@@ -350,7 +368,8 @@ export default function PrescriptionsPage() {
                     <p
                         className="
                             mt-2
-                            text-[#4A4A4A]
+                            text-slate-600
+                            dark:text-slate-400
                             font-medium
                         "
                     >
@@ -369,8 +388,10 @@ export default function PrescriptionsPage() {
                 <div
                     className="
                         bg-white
+                        dark:bg-slate-900
                         border
                         border-[#E8E0D5]
+                        dark:border-slate-800
                         rounded-3xl
                         shadow-sm
                         overflow-hidden
@@ -382,6 +403,7 @@ export default function PrescriptionsPage() {
                     <div
                         className="
                             bg-[#2D6A4F]
+                            dark:bg-emerald-800
                             text-white
                             p-6
                             sm:p-8
@@ -508,7 +530,8 @@ export default function PrescriptionsPage() {
                                 className="
                                     text-xl
                                     font-bold
-                                    text-[#1A1A1A]
+                                    text-slate-900
+                                    dark:text-slate-100
                                     flex
                                     items-center
                                     gap-2
@@ -517,7 +540,7 @@ export default function PrescriptionsPage() {
 
                                 <Pill
                                     size={22}
-                                    className="text-[#2D6A4F]"
+                                    className="text-[#2D6A4F] dark:text-emerald-400"
                                 />
 
                                 Medicines
@@ -546,7 +569,9 @@ export default function PrescriptionsPage() {
                                                     rounded-2xl
                                                     border
                                                     border-[#E8E0D5]
+                                                    dark:border-slate-700
                                                     bg-[#FAF7F2]
+                                                    dark:bg-slate-800/80
                                                     p-5
                                                 "
                                             >
@@ -568,7 +593,8 @@ export default function PrescriptionsPage() {
                                                             className="
                                                                 text-lg
                                                                 font-bold
-                                                                text-[#1A1A1A]
+                                                                text-slate-900
+                                                                dark:text-slate-100
                                                             "
                                                         >
                                                             {
@@ -583,7 +609,8 @@ export default function PrescriptionsPage() {
                                                             <p
                                                                 className="
                                                                     mt-1
-                                                                    text-[#4A4A4A]
+                                                                    text-slate-600
+                                                                    dark:text-slate-400
                                                                     font-medium
                                                                 "
                                                             >
@@ -648,9 +675,11 @@ export default function PrescriptionsPage() {
                                         border
                                         border-dashed
                                         border-[#E8E0D5]
+                                        dark:border-slate-700
                                         p-6
                                         text-center
-                                        text-[#4A4A4A]
+                                        text-slate-600
+                                        dark:text-slate-400
                                     "
                                 >
                                     No medicine details recorded.
@@ -674,10 +703,13 @@ export default function PrescriptionsPage() {
                     rounded-2xl
                     border
                     border-[#E8E0D5]
+                    dark:border-amber-900/50
                     bg-[#FFF8F1]
+                    dark:bg-amber-950/30
                     p-5
                     text-sm
-                    text-[#4A4A4A]
+                    text-slate-700
+                    dark:text-amber-200
                     font-medium
                     leading-6
                 "
@@ -705,7 +737,9 @@ function InfoCard({
                 rounded-2xl
                 border
                 border-[#E8E0D5]
+                dark:border-slate-700
                 bg-[#FAF7F2]
+                dark:bg-slate-800/80
                 p-5
             "
         >
@@ -716,6 +750,7 @@ function InfoCard({
                     items-center
                     gap-2
                     text-[#2D6A4F]
+                    dark:text-emerald-400
                     font-bold
                 "
             >
@@ -729,7 +764,8 @@ function InfoCard({
             <p
                 className="
                     mt-3
-                    text-[#1A1A1A]
+                    text-slate-900
+                    dark:text-slate-100
                     font-semibold
                 "
             >
@@ -751,8 +787,10 @@ function SmallField({
             className="
                 rounded-xl
                 bg-white
+                dark:bg-slate-900
                 border
                 border-[#E8E0D5]
+                dark:border-slate-800
                 p-3
             "
         >
@@ -760,7 +798,8 @@ function SmallField({
             <p
                 className="
                     text-xs
-                    text-[#4A4A4A]
+                    text-slate-500
+                    dark:text-slate-400
                     font-bold
                     uppercase
                 "
@@ -771,7 +810,8 @@ function SmallField({
             <p
                 className="
                     mt-1
-                    text-[#1A1A1A]
+                    text-slate-900
+                    dark:text-slate-100
                     font-semibold
                 "
             >

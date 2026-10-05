@@ -144,6 +144,28 @@ const patientSchema = new mongoose.Schema(
             required: true,
         },
 
+        createdSource: {
+            type: String,
+            enum: ["MANUAL", "BULK_IMPORT"],
+            default: "MANUAL",
+        },
+
+        bulkImportId: {
+            type: String,
+            default: null,
+        },
+
+        importedAt: {
+            type: Date,
+            default: null,
+        },
+
+        importedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Profile",
+            default: null,
+        },
+
         status: {
             type: String,
             enum: ["Healthy", "Observation", "Critical"],

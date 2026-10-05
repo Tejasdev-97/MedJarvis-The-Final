@@ -79,6 +79,11 @@ export default function PinInput({
                         rounded-xl
                         border
                         border-[#E8E0D5]
+                        dark:border-slate-700
+                        bg-white
+                        dark:bg-slate-800
+                        text-slate-900
+                        dark:text-slate-100
                         text-center
                         text-xl
                         font-bold

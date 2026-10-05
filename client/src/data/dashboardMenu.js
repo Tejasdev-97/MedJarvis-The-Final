@@ -10,6 +10,10 @@ import {
     Brain,
     UserPlus,
     ClipboardList,
+    Shield,
+    FolderOpen,
+    Building2,
+    Activity,
 } from "lucide-react";
 
 export const dashboardMenus = {
@@ -18,12 +22,7 @@ export const dashboardMenus = {
         {
             label: "Dashboard",
             icon: LayoutDashboard,
-            path: "/dashboard",
-        },
-        {
-            label: "My Health",
-            icon: HeartPulse,
-            path: "/vitals",
+            path: "/my-health",
         },
         {
             label: "Health Card",
@@ -41,9 +40,19 @@ export const dashboardMenus = {
             path: "/prescriptions",
         },
         {
+            label: "External Records",
+            icon: FolderOpen,
+            path: "/external-records",
+        },
+        {
             label: "AI Health Summary",
             icon: Brain,
             path: "/ai",
+        },
+        {
+            label: "Privacy Center",
+            icon: Shield,
+            path: "/privacy",
         },
         {
             label: "Emergency",
@@ -64,8 +73,8 @@ export const dashboardMenus = {
             path: "/dashboard",
         },
         {
-            label: "Patients",
-            icon: Users,
+            label: "My Patients",
+            icon: HeartPulse,
             path: "/patients",
         },
         {
@@ -74,14 +83,9 @@ export const dashboardMenus = {
             path: "/scan-patient",
         },
         {
-            label: "Prescriptions",
-            icon: FileText,
-            path: "/prescriptions",
-        },
-        {
-            label: "AI Health Summary",
-            icon: Brain,
-            path: "/ai",
+            label: "Health Monitoring",
+            icon: Activity,
+            path: "/monitoring",
         },
         {
             label: "Settings",
@@ -102,8 +106,8 @@ export const dashboardMenus = {
             path: "/register-patient",
         },
         {
-            label: "Patients",
-            icon: Users,
+            label: "My Patients",
+            icon: HeartPulse,
             path: "/patients",
         },
         {
@@ -112,14 +116,9 @@ export const dashboardMenus = {
             path: "/scan-patient",
         },
         {
-            label: "My Health Monitoring",
-            icon: HeartPulse,
-            path: "/vitals",
-        },
-        {
-            label: "AI Health Summary",
-            icon: Brain,
-            path: "/ai",
+            label: "Health Monitoring",
+            icon: Activity,
+            path: "/monitoring",
         },
         {
             label: "Settings",
@@ -140,14 +139,9 @@ export const dashboardMenus = {
             path: "/scan-patient",
         },
         {
-            label: "Emergency",
+            label: "Emergency Cases",
             icon: Ambulance,
             path: "/emergency",
-        },
-        {
-            label: "Patients",
-            icon: Users,
-            path: "/patients",
         },
         {
             label: "Settings",
@@ -168,7 +162,7 @@ export const dashboardMenus = {
             path: "/users",
         },
         {
-            label: "Patients",
+            label: "My Patients",
             icon: HeartPulse,
             path: "/patients",
         },
@@ -176,11 +170,6 @@ export const dashboardMenus = {
             label: "Scan Patient",
             icon: ScanLine,
             path: "/scan-patient",
-        },
-        {
-            label: "Prescriptions",
-            icon: FileText,
-            path: "/prescriptions",
         },
         {
             label: "Settings",
@@ -196,24 +185,14 @@ export const dashboardMenus = {
             path: "/dashboard",
         },
         {
-            label: "Users",
+            label: "Hospitals",
+            icon: Building2,
+            path: "/hospitals",
+        },
+        {
+            label: "Manage Profiles",
             icon: Users,
             path: "/users",
-        },
-        {
-            label: "Patients",
-            icon: HeartPulse,
-            path: "/patients",
-        },
-        {
-            label: "Scan Patient",
-            icon: ScanLine,
-            path: "/scan-patient",
-        },
-        {
-            label: "AI Health Summary",
-            icon: Brain,
-            path: "/ai",
         },
         {
             label: "Settings",

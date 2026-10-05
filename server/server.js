@@ -18,6 +18,11 @@ import aiRoutes from "./routes/aiRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import vitalsRoutes from "./routes/vitalsRoutes.js";
+import bulkRoutes from "./routes/bulkRoutes.js";
+import translationRoutes from "./routes/translationRoutes.js";
+import visitRoutes from "./routes/visitRoutes.js";
+import accessGrantRoutes from "./routes/accessGrantRoutes.js";
+import externalRecordRoutes from "./routes/externalRecordRoutes.js";
 
 
 dotenv.config();
@@ -77,6 +82,11 @@ app.use("/api/timeline", medicalTimelineRoutes);
 app.use("/api/vitals", vitalsRoutes);
 app.use("/api/sms-test", smsTestRoutes);
 app.use("/api/emergency", emergencyRoutes);
+app.use("/api/bulk", bulkRoutes);
+app.use("/api/translation", translationRoutes);
+app.use("/api/visits", visitRoutes);
+app.use("/api/access-grants", accessGrantRoutes);
+app.use("/api/external-records", externalRecordRoutes);
 
 app.get("/api/vitals-test", (req, res) => {
     res.json({

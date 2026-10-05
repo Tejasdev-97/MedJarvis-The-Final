@@ -9,12 +9,13 @@ import {
 
 import protect from "../middleware/authMiddleware.js";
 import authorizeRoles from "../middleware/roleMiddleware.js";
+import requirePatientAccess from "../middleware/requirePatientAccess.js";
 
 const router = express.Router();
 
 // ============================================================
 // ADD PRESCRIPTION
-// Doctor only
+// Doctor only — requires active PRESCRIPTIONS scope grant
 // ============================================================
 
 router.post(
@@ -26,6 +27,7 @@ router.post(
 
 // ============================================================
 // GET PATIENT PRESCRIPTIONS
+// Consent-gated for staff. Patient self-access allowed.
 // ============================================================
 
 router.get(
@@ -38,11 +40,13 @@ router.get(
         "Super Admin",
         "Patient"
     ),
+    requirePatientAccess({ scope: "PRESCRIPTIONS" }),
     getPatientPrescriptions
 );
 
 // ============================================================
 // GET LATEST PRESCRIPTION
+// Consent-gated for staff. Emergency access includes this.
 // ============================================================
 
 router.get(
@@ -56,6 +60,7 @@ router.get(
         "Ambulance Staff",
         "Patient"
     ),
+    requirePatientAccess({ scope: "PRESCRIPTIONS" }),
     getLatestPrescription
 );
 

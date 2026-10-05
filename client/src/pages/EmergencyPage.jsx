@@ -81,7 +81,8 @@ export default function EmergencyPage() {
                         text-3xl
                         sm:text-4xl
                         font-bold
-                        text-[#1A1A1A]
+                        text-slate-900
+                        dark:text-slate-100
                     "
                 >
                     Emergency
@@ -91,7 +92,8 @@ export default function EmergencyPage() {
                 <p
                     className="
                         mt-2
-                        text-[#4A4A4A]
+                        text-slate-600
+                        dark:text-slate-400
                         font-medium
                     "
                 >
@@ -109,7 +111,9 @@ export default function EmergencyPage() {
                     rounded-3xl
                     border
                     border-red-200
+                    dark:border-red-900/60
                     bg-red-50
+                    dark:bg-red-950/40
                     p-6
                     sm:p-8
                 "
@@ -129,6 +133,7 @@ export default function EmergencyPage() {
                             h-14
                             rounded-2xl
                             bg-red-100
+                            dark:bg-red-900/50
                             flex
                             items-center
                             justify-center
@@ -138,7 +143,7 @@ export default function EmergencyPage() {
 
                         <AlertTriangle
                             size={30}
-                            className="text-red-600"
+                            className="text-red-600 dark:text-red-400"
                         />
 
                     </div>
@@ -152,6 +157,7 @@ export default function EmergencyPage() {
                                 sm:text-2xl
                                 font-bold
                                 text-red-800
+                                dark:text-red-300
                             "
                         >
                             Emergency assistance
@@ -160,7 +166,8 @@ export default function EmergencyPage() {
                         <p
                             className="
                                 mt-2
-                                text-[#1A1A1A]
+                                text-slate-800
+                                dark:text-slate-200
                                 font-medium
                                 leading-6
                             "
@@ -182,8 +189,10 @@ export default function EmergencyPage() {
             <div
                 className="
                     bg-white
+                    dark:bg-slate-900
                     border
                     border-[#E8E0D5]
+                    dark:border-slate-800
                     rounded-3xl
                     shadow-sm
                     p-6
@@ -205,6 +214,7 @@ export default function EmergencyPage() {
                             h-11
                             rounded-xl
                             bg-[#D8F3DC]
+                            dark:bg-emerald-950
                             flex
                             items-center
                             justify-center
@@ -213,7 +223,7 @@ export default function EmergencyPage() {
 
                         <Phone
                             size={22}
-                            className="text-[#2D6A4F]"
+                            className="text-[#2D6A4F] dark:text-emerald-400"
                         />
 
                     </div>
@@ -224,7 +234,8 @@ export default function EmergencyPage() {
                             className="
                                 text-xl
                                 font-bold
-                                text-[#1A1A1A]
+                                text-slate-900
+                                dark:text-slate-100
                             "
                         >
                             Registered Emergency Contact
@@ -233,7 +244,8 @@ export default function EmergencyPage() {
                         <p
                             className="
                                 text-sm
-                                text-[#4A4A4A]
+                                text-slate-600
+                                dark:text-slate-400
                                 font-medium
                             "
                         >
@@ -250,8 +262,10 @@ export default function EmergencyPage() {
                         mt-6
                         rounded-2xl
                         bg-[#FAF7F2]
+                        dark:bg-slate-800/80
                         border
                         border-[#E8E0D5]
+                        dark:border-slate-700
                         p-5
                     "
                 >
@@ -274,7 +288,8 @@ export default function EmergencyPage() {
                                 <p
                                     className="
                                         text-sm
-                                        text-[#4A4A4A]
+                                        text-slate-600
+                                        dark:text-slate-400
                                         font-bold
                                     "
                                 >
@@ -286,7 +301,8 @@ export default function EmergencyPage() {
                                         mt-1
                                         text-2xl
                                         font-bold
-                                        text-[#1A1A1A]
+                                        text-slate-900
+                                        dark:text-slate-100
                                     "
                                 >
                                     {emergencyContact}
@@ -309,6 +325,8 @@ export default function EmergencyPage() {
                                     rounded-xl
                                     bg-[#2D6A4F]
                                     hover:bg-[#1B4332]
+                                    dark:bg-emerald-600
+                                    dark:hover:bg-emerald-500
                                     text-white
                                     font-bold
                                     transition
@@ -336,14 +354,16 @@ export default function EmergencyPage() {
                                 size={35}
                                 className="
                                     mx-auto
-                                    text-[#4A4A4A]
+                                    text-slate-400
+                                    dark:text-slate-500
                                 "
                             />
 
                             <p
                                 className="
                                     mt-3
-                                    text-[#1A1A1A]
+                                    text-slate-900
+                                    dark:text-slate-100
                                     font-bold
                                 "
                             >
@@ -354,7 +374,8 @@ export default function EmergencyPage() {
                                 className="
                                     mt-1
                                     text-sm
-                                    text-[#4A4A4A]
+                                    text-slate-600
+                                    dark:text-slate-400
                                 "
                             >
                                 Please ask an authorized healthcare
@@ -375,8 +396,10 @@ export default function EmergencyPage() {
             <div
                 className="
                     bg-white
+                    dark:bg-slate-900
                     border
                     border-[#E8E0D5]
+                    dark:border-slate-800
                     rounded-3xl
                     shadow-sm
                     p-6
@@ -389,7 +412,8 @@ export default function EmergencyPage() {
                         text-xl
                         sm:text-2xl
                         font-bold
-                        text-[#1A1A1A]
+                        text-slate-900
+                        dark:text-slate-100
                     "
                 >
                     MedJarvis Emergency Monitoring
@@ -398,7 +422,8 @@ export default function EmergencyPage() {
                 <p
                     className="
                         mt-2
-                        text-[#4A4A4A]
+                        text-slate-600
+                        dark:text-slate-400
                         font-medium
                     "
                 >
@@ -448,10 +473,13 @@ export default function EmergencyPage() {
                     rounded-2xl
                     border
                     border-[#E8E0D5]
+                    dark:border-amber-900/50
                     bg-[#FFF8F1]
+                    dark:bg-amber-950/30
                     p-5
                     text-sm
-                    text-[#4A4A4A]
+                    text-slate-700
+                    dark:text-amber-200
                     font-medium
                     leading-6
                 "
@@ -479,7 +507,9 @@ function Step({
                 rounded-2xl
                 border
                 border-[#E8E0D5]
+                dark:border-slate-700
                 bg-[#FAF7F2]
+                dark:bg-slate-800/80
                 p-5
             "
         >
@@ -490,7 +520,9 @@ function Step({
                     h-10
                     rounded-xl
                     bg-[#D8F3DC]
+                    dark:bg-emerald-950
                     text-[#2D6A4F]
+                    dark:text-emerald-400
                     flex
                     items-center
                     justify-center
@@ -503,7 +535,8 @@ function Step({
                 className="
                     mt-4
                     font-bold
-                    text-[#1A1A1A]
+                    text-slate-900
+                    dark:text-slate-100
                 "
             >
                 {title}
@@ -513,7 +546,8 @@ function Step({
                 className="
                     mt-2
                     text-sm
-                    text-[#4A4A4A]
+                    text-slate-600
+                    dark:text-slate-400
                     leading-5
                 "
             >

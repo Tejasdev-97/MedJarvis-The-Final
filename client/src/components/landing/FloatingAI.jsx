@@ -1,6 +1,9 @@
 import { Bot, MessageCircle } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function FloatingAI() {
+    const { t } = useLanguage();
+
     return (
         <div
             className="
@@ -12,7 +15,6 @@ export default function FloatingAI() {
             "
         >
             {/* Tooltip */}
-
             <div
                 className="
                     absolute
@@ -34,12 +36,12 @@ export default function FloatingAI() {
                     pointer-events-none
                 "
             >
-                Ask MedJarvis AI
+                {t("Ask MedJarvis AI")}
             </div>
 
             {/* Floating Button */}
-
             <button
+                aria-label={t("Ask MedJarvis AI")}
                 className="
                     relative
                     flex
@@ -60,7 +62,6 @@ export default function FloatingAI() {
                 "
             >
                 {/* Pulse Animation */}
-
                 <span
                     className="
                         absolute
@@ -76,11 +77,9 @@ export default function FloatingAI() {
                     size={30}
                     className="relative z-10"
                 />
-
             </button>
 
             {/* Online Badge */}
-
             <div
                 className="
                     absolute
@@ -102,7 +101,6 @@ export default function FloatingAI() {
                     className="text-white"
                 />
             </div>
-
         </div>
     );
-}
+}
