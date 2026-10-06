@@ -12,6 +12,7 @@ import {
     Activity,
     Stethoscope,
     UserRound,
+    Building2,
 } from "lucide-react";
 
 export const dashboardConfig = {
